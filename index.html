@@ -1,49 +1,81 @@
 <!doctype html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+    <title>reveal.js</title>
 
-		<link rel="stylesheet" href="css/reset.css">
-		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css">
 
-		<!-- Theme used for syntax highlighting of code -->
-		<link rel="stylesheet" href="lib/css/monokai.css">
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/monokai.css">
+    <link rel="stylesheet" href="css/custom.css">
 
-		<!-- Printing and PDF exports -->
-		<script>
-			var link = document.createElement( 'link' );
-			link.rel = 'stylesheet';
-			link.type = 'text/css';
-			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-			document.getElementsByTagName( 'head' )[0].appendChild( link );
-		</script>
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
-			</div>
-		</div>
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+    <style>
+      body:after {
+        content: url(./lisa50.png);
+        position: fixed;
+        bottom: 3.5em;
+        right: 3.5em;
+        box-shadow: 5px 5px 10px #000; }
+     </style>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section data-background-image='lisa.png' data-background-size=10% data-background-position="bottom 10px right 20px"><h1>Linux Systems Troubleshooting</h1><h2>Thomas Uphill</h2><h3>thomas@uphillian.com</h3></section>
+        <section>
+          <section><h1>A story</h1><img height="50%" src="./rainbow_unicorn200.png" border="0">
+            <aside class="notes">
+             A dual homed system, two IP addresses on the system.
+             A certain DB product is advertise itself to other members of its "lattice" using address A.
+             Backup product is using address A as well.
 
-		<script src="js/reveal.js"></script>
+             The DB product should actually be using address B.
+             No way to configure the DB product to use a specific address.
 
-		<script>
-			// More info about config & dependencies:
-			// - https://github.com/hakimel/reveal.js#configuration
-			// - https://github.com/hakimel/reveal.js#dependencies
-			Reveal.initialize({
-				dependencies: [
-					{ src: 'plugin/markdown/marked.js' },
-					{ src: 'plugin/markdown/markdown.js' },
-					{ src: 'plugin/notes/notes.js', async: true },
-					{ src: 'plugin/highlight/highlight.js', async: true }
-				]
-			});
-		</script>
-	</body>
+             so begins the investigation… what's going on here.
+             </aside>
+          </section>
+          <section><h1>getip</h1>
+            <p class="fragment">demo getip</p>
+            <aside class="notes">for the purposes of this talk, I've replaced the backup software with a program written in C which is functionally equivalent to the original backup program.
+            We'll call it getip.
+            getip returns the primary ip address of the machine on which it is running.
+            </aside>
+           </section>
+           <section><h1>Where to start?</h1>
+           </section>
+        </section>
+        <section>Terminal<br><iframe width=1024px height=600px class="terminal" src="http://localhost:8081">this is a div</iframe></section>
+      </div>
+    </div>
+
+    <script src="js/reveal.js"></script>
+
+    <script>
+      // More info about config & dependencies:
+      // - https://github.com/hakimel/reveal.js#configuration
+      // - https://github.com/hakimel/reveal.js#dependencies
+      Reveal.initialize({
+        dependencies: [
+          { src: 'plugin/markdown/marked.js' },
+          { src: 'plugin/markdown/markdown.js' },
+          { src: 'plugin/notes/notes.js', async: true },
+          { src: 'plugin/highlight/highlight.js', async: true }
+        ]
+      });
+    </script>
+  </body>
 </html>

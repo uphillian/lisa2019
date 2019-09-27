@@ -53,9 +53,14 @@
             <aside class="notes">for the purposes of this talk, I've replaced the backup software with a program written in C which is functionally equivalent to the original backup program.
             We'll call it getip.
             getip returns the primary ip address of the machine on which it is running.
+            show gethostbyname in use. there are other examples but tar is good enough.
+            show the below on a host without debuginfo, and one with it.
+            [root@localhost bin]# ltrace -e gethostbyname tar cf phoenix:foo.tar /etc/hosts
             </aside>
            </section>
            <section><h1>Where to start?</h1>
+           </section>
+           <section><h1>ltrace</h1>
            </section>
         </section>
         <section>Terminal<br><iframe width=1024px height=600px class="terminal" src="http://localhost:8081">this is a div</iframe></section>

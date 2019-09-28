@@ -77,8 +77,7 @@
             </span>
           </section>
 
-          <section><h1>getip</h1>
-            <p class="fragment">demo getip</p>
+          <section><h1>Where to start?</h1>
             <aside class="notes">for the purposes of this talk, I've replaced the backup software with a program written in C which is functionally equivalent to the original backup program.
             We'll call it getip.
             getip returns the primary ip address of the machine on which it is running.
@@ -87,11 +86,37 @@
             [root@localhost bin]# ltrace -e gethostbyname tar cf phoenix:foo.tar /etc/hosts
             </aside>
            </section>
-           <section><h1>Where to start?</h1>
+
+           <section>
+             <h1>ltrace</h1>
+             <span class="fragment fade-in">
+               <span class="fragment fade-out">Why?</span>
+               <span class="fragment fade-in">Because UNIX is old</span>
+             </span>
            </section>
-           <section><h1>ltrace</h1>
+
+           <section>
+             <aside class="notes">Linux is a clone of UNIX, UNIX is a clone of MULTICS
+               The important thing to remember is that it was developed on a pdp-7
+               A pdp-7 had a standard memory of just under 10kb.  The max was 144kb.
+               We are talking a very tight space to work. this is the time of punch cards, terminals are still new.
+               They had to be stingy with space, they reused everything they could and came up with the model we use today.
+               And there was a method to the madness, KISS, keep it simple stupid
+             </aside>
+             <span class="fragment fade-in"><img src="./tape.png">
+               <span class="fragment fade-in"><h1>Love Ken</h1></span>
+               <span class="fragment fade-in"><img src="./pdp7.png"></span>
+                 <span class="fragment fade-in"><h1>KISS</h1></span>
+             </span>
            </section>
+
+           <section>
+             <aside class="notes">diagram of the thing
+             </aside>
+           </section>
+
         </section>
+        <!-- end of story section, into terminal -->
         <section>Terminal<br><iframe width=1024px height=600px class="terminal" src="http://localhost:8081">this is a div</iframe></section>
       </div>
     </div>

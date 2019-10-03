@@ -208,19 +208,22 @@
 
         </section>
         <!-- end of story section, into terminal -->
-        <section>Terminal<br>
+        <section>Demo<br>
           <span id="terminal-iframe">
-            Terminal
+            <script>
+              if ( window.location == window.parent.location ) {
+                //document.getElementById('terminal-iframe').innerHTML = "<iframe width=1024px height=600px class=ttyd src='http://localhost:8081'>Demo</iframe>";
+                document.getElementById('terminal-iframe').innerHTML = "<div><object type=text/html width=1024px height=600px class=ttyd data='http://localhost:8081'></object></div>";
+
+              } else {
+                document.getElementById('terminal-iframe').innerHTML = "In Speaker View";
+              }
+            </script>
           </span>
         </section>
       </div>
     </div>
 
-    <script>
-      if (!document.getElementById('speaker-controls')) {
-        document.getElementById('terminal-iframe').innerHTML = "<iframe width=1024px height=600px class=ttyd src='http://127.0.0.1:8081'>Terminal</iframe>";
-      }
-    </script>
     <script src="js/reveal.js"></script>
 
     <script>

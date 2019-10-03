@@ -1,0 +1,1 @@
+ttyd -p 8081 -t fontSize=24 tmux attach -t lisa

@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="lib/css/monokai.css">
     <link rel="stylesheet" href="css/custom.css">
 
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css?family=Big+Shoulders+Display&display=swap" rel="stylesheet">
     <!-- Printing and PDF exports -->
     <script>
       var link = document.createElement( 'link' );
@@ -34,7 +36,17 @@
   <body>
     <div class="reveal">
       <div class="slides">
-        <section data-background-image='mu_white200.png' data-background-size=10% data-background-position="bottom 20px right 20px"><h1>Linux Systems Troubleshooting</h1><h2>Thomas Uphill</h2><h3>thomas@uphillian.com</h3></section>
+        <section>
+          <section data-background-image='mu_white200.png' data-background-size=10% data-background-position="bottom 20px right 20px">
+            <h1>Linux Systems Troubleshooting</h1><h2>Thomas Uphill</h2><h3>thomas@uphillian.com</h3>
+          </section>
+          <section>
+            <h1>Me</h1>
+            <a href="https://www.google.com/search?q=Thomas+Uphill"><img src="./author.png"></a>
+            <h2>consulting@uphillian.com</h2>
+          </section>
+        </section>
+
         <section>
           <section><h1>A story</h1><img height="50%" src="./rainbow_unicorn200.png" border="0">
             <aside class="notes">
@@ -54,7 +66,7 @@
               <span class="fragment fade-in">⇨</span>
               <span class="fragment fade-in">gethostbyname</span>
               <br><span class="fragment fade-in"><img valign="middle" height=10% src="./rainbow_unicorn200_right.png" border=0></span>
-	          </span>
+            </span>
             <p>
             <span class="fragment fade-in">Backup
               <span class="fragment fade-in">⇨</span>
@@ -68,7 +80,7 @@
               <span class="fade-in">⇨</span>
               <span class="fade-in">gethostbyname</span>
               <br><span class="fragment fade-in"><img valign="middle" height=10% src="./rainbow_unicorn200_right.png" border=0></span>
-	          </span>
+            </span>
             <p>
             <span class="fade-in">Backup
               <span class="fade-in">⇨</span>
@@ -109,18 +121,106 @@
                  <span class="fragment fade-in"><h1>KISS</h1></span>
              </span>
            </section>
+        </section>
+        <section>
+           <section>
+             <aside class="notes">
+               you can have too much detail, so this is going to be a very simplistic view of the system.
+               we will start with the kernel, the kernel needs to talk to hardware
+               this is done with drivers, many drivers are in the form of kernel modules
+               the modules are just bits of code that can be loaded and unloaded as needed.
+               At the top you have the applications, when an application needs to do something at a system level,
+               it needs to ask the kernel, it asks via system calls
+
+             </aside>
+             <h1>Kernel</h1>
+             <table>
+               <tr>
+                 <td align=center>
+                   <span class=fragment data-fragment-index=2>application</span>
+                 </td>
+                 <td bgcolor=lightsteelblue>
+                   <span class=fragment data-fragment-index=10>user</span>
+                 </td>
+               </tr>
+               <tr>
+                 <td bgcolor=lavender align=center>
+                   <span class=fragment data-fragment-index=4><font color=darkred>⇳ system calls ⇳</font></span>
+                 </td>
+                 <td bgcolor=black>
+                 </td>
+               </tr>
+               <tr>
+                 <td align=center>
+                   <img height=100 src="./tux.png">
+                 </td>
+                 <td bgcolor=lavender rowspan=3>
+                   <span class=fragment data-fragment-index=11>kernel</span>
+                 </td>
+               </tr>
+               <tr height=25>
+                 <td bgcolor=lavender align=center>
+                   <span class="fragment fade-in" data-fragment-index=3><font color=darkred>⇳ driver/module ⇳</font></span>
+                 </td>
+               </tr>
+               <tr>
+                 <td align=center>
+                   <span class="fragment fade-in" data-fragment-index=1>hardware</span>
+                 </td>
+               </tr>
+             </span>
+             </table>
+           </section>
 
            <section>
-             <aside class="notes">diagram of the thing
+             <h1>System Calls</h1>
+             <aside class="notes">
+               when designed, there were 34 system calls
+               they are still there today, there are a few hundred now
+               the original 34 include things like open, close, fork, connect, exit, chown, chmod, flock, malloc, write
              </aside>
+           </section>
+
+           <section>
+             <aside class="notes">
+               man glibc
+               man kernel
+               man syscalls
+             </aside>
+             <h1>Documentation</h1>
+             <span class="fragment fade-in"><img src="./morpheus.jpg"></span>
+             <span class="fragment fade-in"><h2>man syscalls</h2></span>
+           </section>
+
+           <section>
+             <aside class="notes">
+               again, not interested in writing code more than once, they created libraries that could do perform the calls on behalf
+               of user apps.  the shared libraries were the C-library.
+               GNU reimplemented in a Free as in Freedom way, created the GNU C-library.
+             </aside>
+             <h1>Shared Libraries</h1>
+             <span class="fragment fade-in"><h2>glibc
+                 <span class="fragment fade-in">libc.so
+                 </span>
+               </h2>
+             </span>
            </section>
 
         </section>
         <!-- end of story section, into terminal -->
-        <section>Terminal<br><iframe width=1024px height=600px class="terminal" src="http://localhost:8081">this is a div</iframe></section>
+        <section>Terminal<br>
+          <span id="terminal-iframe">
+            Terminal
+          </span>
+        </section>
       </div>
     </div>
 
+    <script>
+      if (!document.getElementById('speaker-controls')) {
+        document.getElementById('terminal-iframe').innerHTML = "<iframe width=1024px height=600px class=ttyd src='http://127.0.0.1:8081'>Terminal</iframe>";
+      }
+    </script>
     <script src="js/reveal.js"></script>
 
     <script>

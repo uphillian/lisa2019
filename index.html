@@ -1,0 +1,243 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>reveal.js</title>
+
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/monokai.css">
+    <link rel="stylesheet" href="css/custom.css">
+
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css?family=Big+Shoulders+Display&display=swap" rel="stylesheet">
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+    <style>
+      body:after {
+        content: url(./lisa50.png);
+        position: fixed;
+        bottom: 3.5em;
+        right: 3.5em;
+        box-shadow: 5px 5px 10px #000; }
+     </style>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <section data-background-image='mu_white200.png' data-background-size=10% data-background-position="bottom 20px right 20px">
+            <h1>Linux Systems Troubleshooting</h1><h2>Thomas Uphill</h2><h3>thomas@uphillian.com</h3>
+          </section>
+          <section>
+            <h1>Me</h1>
+            <a href="https://www.google.com/search?q=Thomas+Uphill"><img src="./author.png"></a>
+            <h2>consulting@uphillian.com</h2>
+          </section>
+        </section>
+
+        <section>
+          <section><h1>A story</h1><img height="50%" src="./rainbow_unicorn200.png" border="0">
+            <aside class="notes">
+             A dual homed system, two IP addresses on the system.
+             A certain DB product is advertise itself to other members of its "lattice" using address A.
+             Backup product is using address A as well.
+
+             The DB product should actually be using address B.
+             No way to configure the DB product to use a specific address.
+
+             so begins the investigation… what's going on here.
+             </aside>
+          </section>
+
+          <section>
+            <span class="fragment fade-in">DB
+              <span class="fragment fade-in">⇨</span>
+              <span class="fragment fade-in">gethostbyname</span>
+              <br><span class="fragment fade-in"><img valign="middle" height=10% src="./rainbow_unicorn200_right.png" border=0></span>
+            </span>
+            <p>
+            <span class="fragment fade-in">Backup
+              <span class="fragment fade-in">⇨</span>
+              <span class="fragment fade-in">gethostbyname</span>
+              <br><span class="fragment fade-in"><img valign="middle" height=10% src="./rainbow_unicorn200_right.png" border=0></span>
+            </span>
+          </section>
+
+          <section>
+            <span class="fade-in">DB
+              <span class="fade-in">⇨</span>
+              <span class="fade-in">gethostbyname</span>
+              <br><span class="fragment fade-in"><img valign="middle" height=10% src="./rainbow_unicorn200_right.png" border=0></span>
+            </span>
+            <p>
+            <span class="fade-in">Backup
+              <span class="fade-in">⇨</span>
+              <span class="fade-in">gethostbyname</span>
+              <br><span class="fragment fade-in"><img valign="middle" height=10% src="./rainbow_unicorn200_left.png" border=0></span>
+            </span>
+          </section>
+
+          <section><h1>Where to start?</h1>
+            <aside class="notes">for the purposes of this talk, I've replaced the backup software with a program written in C which is functionally equivalent to the original backup program.
+            We'll call it getip.
+            getip returns the primary ip address of the machine on which it is running.
+            show gethostbyname in use. there are other examples but tar is good enough.
+            show the below on a host without debuginfo, and one with it.
+            [root@localhost bin]# ltrace -e gethostbyname tar cf phoenix:foo.tar /etc/hosts
+            </aside>
+           </section>
+
+           <section>
+             <h1>ltrace</h1>
+             <span class="fragment fade-in">
+               <span class="fragment fade-out">Why?</span>
+               <span class="fragment fade-in">Because UNIX is old</span>
+             </span>
+           </section>
+
+           <section>
+             <aside class="notes">Linux is a clone of UNIX, UNIX is a clone of MULTICS
+               The important thing to remember is that it was developed on a pdp-7
+               A pdp-7 had a standard memory of just under 10kb.  The max was 144kb.
+               We are talking a very tight space to work. this is the time of punch cards, terminals are still new.
+               They had to be stingy with space, they reused everything they could and came up with the model we use today.
+               And there was a method to the madness, KISS, keep it simple stupid
+             </aside>
+             <span class="fragment fade-in"><img src="./tape.png">
+               <span class="fragment fade-in"><h1>Love Ken</h1></span>
+               <span class="fragment fade-in"><img src="./pdp7.png"></span>
+                 <span class="fragment fade-in"><h1>KISS</h1></span>
+             </span>
+           </section>
+        </section>
+        <section>
+           <section>
+             <aside class="notes">
+               you can have too much detail, so this is going to be a very simplistic view of the system.
+               we will start with the kernel, the kernel needs to talk to hardware
+               this is done with drivers, many drivers are in the form of kernel modules
+               the modules are just bits of code that can be loaded and unloaded as needed.
+               At the top you have the applications, when an application needs to do something at a system level,
+               it needs to ask the kernel, it asks via system calls
+
+             </aside>
+             <h1>Kernel</h1>
+             <table>
+               <tr>
+                 <td align=center>
+                   <span class=fragment data-fragment-index=2>application</span>
+                 </td>
+                 <td bgcolor=lightsteelblue>
+                   <span class=fragment data-fragment-index=10>user</span>
+                 </td>
+               </tr>
+               <tr>
+                 <td bgcolor=lavender align=center>
+                   <span class=fragment data-fragment-index=4><font color=darkred>⇳ system calls ⇳</font></span>
+                 </td>
+                 <td bgcolor=black>
+                 </td>
+               </tr>
+               <tr>
+                 <td align=center>
+                   <img height=100 src="./tux.png">
+                 </td>
+                 <td bgcolor=lavender rowspan=3>
+                   <span class=fragment data-fragment-index=11>kernel</span>
+                 </td>
+               </tr>
+               <tr height=25>
+                 <td bgcolor=lavender align=center>
+                   <span class="fragment fade-in" data-fragment-index=3><font color=darkred>⇳ driver/module ⇳</font></span>
+                 </td>
+               </tr>
+               <tr>
+                 <td align=center>
+                   <span class="fragment fade-in" data-fragment-index=1>hardware</span>
+                 </td>
+               </tr>
+             </span>
+             </table>
+           </section>
+
+           <section>
+             <h1>System Calls</h1>
+             <aside class="notes">
+               when designed, there were 34 system calls
+               they are still there today, there are a few hundred now
+               the original 34 include things like open, close, fork, connect, exit, chown, chmod, flock, malloc, write
+             </aside>
+           </section>
+
+           <section>
+             <aside class="notes">
+               man glibc
+               man kernel
+               man syscalls
+             </aside>
+             <h1>Documentation</h1>
+             <span class="fragment fade-in"><img src="./morpheus.jpg"></span>
+             <span class="fragment fade-in"><h2>man syscalls</h2></span>
+           </section>
+
+           <section>
+             <aside class="notes">
+               again, not interested in writing code more than once, they created libraries that could do perform the calls on behalf
+               of user apps.  the shared libraries were the C-library.
+               GNU reimplemented in a Free as in Freedom way, created the GNU C-library.
+             </aside>
+             <h1>Shared Libraries</h1>
+             <span class="fragment fade-in"><h2>glibc
+                 <span class="fragment fade-in">libc.so
+                 </span>
+               </h2>
+             </span>
+           </section>
+
+        </section>
+        <!-- end of story section, into terminal -->
+        <section>Demo<br>
+          <span id="terminal-iframe">
+            <script>
+              if ( window.location == window.parent.location ) {
+                //document.getElementById('terminal-iframe').innerHTML = "<iframe width=1024px height=600px class=ttyd src='http://localhost:8081'>Demo</iframe>";
+                document.getElementById('terminal-iframe').innerHTML = "<div><object type=text/html width=1024px height=600px class=ttyd data='http://localhost:8081'></object></div>";
+
+              } else {
+                document.getElementById('terminal-iframe').innerHTML = "In Speaker View";
+              }
+            </script>
+          </span>
+        </section>
+      </div>
+    </div>
+
+    <script src="js/reveal.js"></script>
+
+    <script>
+      // More info about config & dependencies:
+      // - https://github.com/hakimel/reveal.js#configuration
+      // - https://github.com/hakimel/reveal.js#dependencies
+      Reveal.initialize({
+        dependencies: [
+          { src: 'plugin/markdown/marked.js' },
+          { src: 'plugin/markdown/markdown.js' },
+          { src: 'plugin/notes/notes.js', async: true },
+          { src: 'plugin/highlight/highlight.js', async: true }
+        ]
+      });
+    </script>
+  </body>
+</html>

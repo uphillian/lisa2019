@@ -6,4 +6,4 @@ tmux neww -n glibc
 tmux neww -n vagrant
 
 # start ttyd
-ttyd -p 8081 -t fontSize=24 tmux attach -t lisa 2>&1 >/tmp/ttyd &
+./ttyd-start 

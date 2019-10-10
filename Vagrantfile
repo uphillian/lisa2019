@@ -23,7 +23,8 @@ Vagrant.configure("2") do |config|
     getip.vm.box = "centos/7"
     getip.vm.network "private_network", ip: "192.168.0.200"
     getip.vm.provision "ansible" do |ansible|
-      ansible.playbook = "playbook.yml"
+      ansible.become = true
+      ansible.playbook = "ansible/getip.yml"
     end
   end
 end

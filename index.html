@@ -123,108 +123,273 @@
            </section>
         </section>
         <section>
-           <section>
-             <aside class="notes">
-               you can have too much detail, so this is going to be a very simplistic view of the system.
-               we will start with the kernel, the kernel needs to talk to hardware
-               this is done with drivers, many drivers are in the form of kernel modules
-               the modules are just bits of code that can be loaded and unloaded as needed.
-               At the top you have the applications, when an application needs to do something at a system level,
-               it needs to ask the kernel, it asks via system calls
+          <section>
+            <h1>How it all works</h1>
+          </section>
+          <section>
+            <aside class="notes">
+              you can have too much detail, so this is going to be a very simplistic view of the system.
+              we will start with the kernel, the kernel needs to talk to hardware
+              this is done with drivers, many drivers are in the form of kernel modules
+              the modules are just bits of code that can be loaded and unloaded as needed.
+              At the top you have the applications, when an application needs to do something at a system level,
+              it needs to ask the kernel, it asks via system calls
 
-             </aside>
-             <h1>Kernel</h1>
-             <table>
-               <tr>
-                 <td align=center>
-                   <span class=fragment data-fragment-index=2>application</span>
-                 </td>
-                 <td bgcolor=lightsteelblue>
-                   <span class=fragment data-fragment-index=10>user</span>
-                 </td>
-               </tr>
-               <tr>
-                 <td bgcolor=lavender align=center>
-                   <span class=fragment data-fragment-index=4><font color=darkred>⇳ system calls ⇳</font></span>
-                 </td>
-                 <td bgcolor=black>
-                 </td>
-               </tr>
-               <tr>
-                 <td align=center>
-                   <img height=100 src="./tux.png">
-                 </td>
-                 <td bgcolor=lavender rowspan=3>
-                   <span class=fragment data-fragment-index=11>kernel</span>
-                 </td>
-               </tr>
-               <tr height=25>
-                 <td bgcolor=lavender align=center>
-                   <span class="fragment fade-in" data-fragment-index=3><font color=darkred>⇳ driver/module ⇳</font></span>
-                 </td>
-               </tr>
-               <tr>
-                 <td align=center>
-                   <span class="fragment fade-in" data-fragment-index=1>hardware</span>
-                 </td>
-               </tr>
-             </span>
-             </table>
-           </section>
+            </aside>
+            <h1>Kernel</h1>
+            <table>
+              <tr>
+                <td align=center>
+                  <span class=fragment data-fragment-index=2>application</span>
+                </td>
+                <td bgcolor=lightsteelblue>
+                  <span class=fragment data-fragment-index=10>user</span>
+                </td>
+              </tr>
+              <tr>
+                <td bgcolor=lavender align=center>
+                  <span class=fragment data-fragment-index=4><font color=darkred>⇳ system calls ⇳</font></span>
+                </td>
+                <td bgcolor=black>
+                </td>
+              </tr>
+              <tr>
+                <td align=center>
+                  <img height=100 src="./tux.png">
+                </td>
+                <td bgcolor=lavender rowspan=3>
+                  <span class=fragment data-fragment-index=11>kernel</span>
+                </td>
+              </tr>
+              <tr height=25>
+                <td bgcolor=lavender align=center>
+                  <span class="fragment fade-in" data-fragment-index=3><font color=darkred>⇳ driver/module ⇳</font></span>
+                </td>
+              </tr>
+              <tr>
+                <td align=center>
+                  <span class="fragment fade-in" data-fragment-index=1>hardware</span>
+                </td>
+              </tr>
+            </span>
+            </table>
+          </section>
 
-           <section>
-             <h1>System Calls</h1>
-             <aside class="notes">
-               when designed, there were 34 system calls
-               they are still there today, there are a few hundred now
-               the original 34 include things like open, close, fork, connect, exit, chown, chmod, flock, malloc, write
-             </aside>
-           </section>
+          <section>
+            <h1>System Calls</h1>
+            <aside class="notes">
+              when designed, there were 34 system calls
+              they are still there today, there are a few hundred now
+              the original 34 include things like open, close, fork, connect, exit, chown, chmod, flock, malloc, write
+            </aside>
+          </section>
 
-           <section>
-             <aside class="notes">
-               man glibc
-               man kernel
-               man syscalls
-             </aside>
-             <h1>Documentation</h1>
-             <span class="fragment fade-in"><img src="./morpheus.jpg"></span>
-             <span class="fragment fade-in"><h2>man syscalls</h2></span>
-           </section>
+          <section>
+            <aside class="notes">
+              man syscalls
+              man glibc
+              man intro
+            </aside>
+            <h1>Documentation</h1>
+            <span class="fragment fade-in"><img src="./morpheus.jpg"></span>
+            <span class="fragment fade-in"><h2>man syscalls</h2></span>
+          </section>
+          <section>Documentation<br>
+            <span id="terminal-iframe">
+              <script>
+                if ( window.location == window.parent.location ) {
+                  document.getElementById('terminal-iframe').innerHTML = "<div><object type=text/html width=1024px height=600px class=ttyd data='http://localhost:8081'></object></div>";
+                } else {
+                  document.getElementById('terminal-iframe').innerHTML = "In Speaker View";
+                }
+              </script>
+            </span>
+          </section>
 
-           <section>
-             <aside class="notes">
-               again, not interested in writing code more than once, they created libraries that could do perform the calls on behalf
-               of user apps.  the shared libraries were the C-library.
-               GNU reimplemented in a Free as in Freedom way, created the GNU C-library.
-             </aside>
-             <h1>Shared Libraries</h1>
-             <span class="fragment fade-in"><h2>glibc
-                 <span class="fragment fade-in">libc.so
-                 </span>
-               </h2>
-             </span>
-           </section>
+          <section>
+            <aside class="notes">
+              again, not interested in writing code more than once, they created libraries that could do perform the calls on behalf
+              of user apps.  the shared libraries were the C-library.
+              GNU reimplemented in a Free as in Freedom way, created the GNU C-library.
+            </aside>
+            <h1>Shared Libraries</h1>
+            <span class="fragment fade-in"><h2>glibc</h2>
+              <span class="fragment fade-in"><h2>libc.so</h2></span>
+            </span>
+          </section>
+          <section>
+            <aside class="notes">
+              each line is a library call, each one of these has a man page that describes the input, output and return values.
+              try man rindex on your own laptop
+              ltrace is showing the library calls, strace only shows the syscalls, but you can get both with ltrace -S
+            </aside>
+            <pre class="stretch"><code class="bash">
+[root@localhost ~]# ltrace hostname
+_libc_start_main(0x401230, 1, 0x7ffd4a91dd48, 0x401ea0 &lt;unfinished ...&gt;
+rindex("hostname", '/')                                          = nil
+strcmp("hostname", "domainname")                                 = 4
+strcmp("hostname", "ypdomainname")                               = -17
+strcmp("hostname", "nisdomainname")                              = -6
+getopt_long(1, 0x7ffd4a91dd48, "aAdfbF:h?iIsVy", 0x4028a0, nil)  = -1
+__errno_location()                                               = 0x7fefda8a86b0
+malloc(128)                                                      = 0x1a0a010
+gethostname("localhost.localdomain", 128)                        = 0
+memchr("localhost.localdomain", '\0', 128)                       = 0x1a0a025
+puts("localhost.localdomain"localhost.localdomain)               = 22
++++ exited (status 0) +++</code></pre>
+          </section>
+          <section>
+            <aside class="notes">
+              with -S we see all the syscalls, the interesting thing is:
+              open@SYS("/etc/ld.so.cache", 524288, 01)                                                                   = 3
+            </aside>
+            <pre class="stretch"><code class="bash">
+[root@localhost ~]# ltrace -S hostname
+brk@SYS(nil)                                                                                               = 0x2386000
+mmap@SYS(nil, 4096, 3, 34, -1, 0)                                                                          = 0x7f28906de000
+access@SYS("/etc/ld.so.preload", 04)                                                                       = -2
+open@SYS("/etc/ld.so.cache", 524288, 01)                                                                   = 3
+fstat@SYS(3, 0x7ffcfb5c0830)                                                                               = 0
+mmap@SYS(nil, 22425, 1, 2, 3, 0)                                                                           = 0x7f28906d8000
+close@SYS(3)                                                                                               = 0
+open@SYS("/lib64/libnsl.so.1", 524288, 022033410520)                                                       = 3
+read@SYS(3, "\177ELF\002\001\001", 832)                                                                    = 832
+fstat@SYS(3, 0x7ffcfb5c0890)                                                                               = 0
+mmap@SYS(nil, 2202232, 5, 2050, 3, 0)                                                                      = 0x7f28902a4000
+mprotect@SYS(0x7f28902ba000, 2097152, 0)                                                                   = 0
+mmap@SYS(0x7f28904ba000, 8192, 3, 2066, 3, 90112)                                                          = 0x7f28904ba000
+mmap@SYS(0x7f28904bc000, 6776, 3, 50, -1, 0)                                                               = 0x7f28904bc000
+close@SYS(3)                                                                                               = 0
+open@SYS("/lib64/libc.so.6", 524288, 022033410520)                                                         = 3
+read@SYS(3, "\177ELF\002\001\001\003", 832)                                                                = 832
+fstat@SYS(3, 0x7ffcfb5c0860)                                                                               = 0
+mmap@SYS(nil, 3981792, 5, 2050, 3, 0)                                                                      = 0x7f288fed7000
+mprotect@SYS(0x7f2890099000, 2097152, 0)                                                                   = 0
+mmap@SYS(0x7f2890299000, 24576, 3, 2066, 3, 1843200)                                                       = 0x7f2890299000
+mmap@SYS(0x7f289029f000, 16864, 3, 50, -1, 0)                                                              = 0x7f289029f000
+close@SYS(3)                                                                                               = 0
+mmap@SYS(nil, 4096, 3, 34, -1, 0)                                                                          = 0x7f28906d7000
+mmap@SYS(nil, 8192, 3, 34, -1, 0)                                                                          = 0x7f28906d5000
+arch_prctl@SYS(4098, 0x7f28906d5740, 0x7f28906d6050, 34)                                                   = 0
+mprotect@SYS(0x7f2890299000, 16384, 1)                                                                     = 0
+mprotect@SYS(0x7f28904ba000, 4096, 1)                                                                      = 0
+mprotect@SYS(0x602000, 4096, 1)                                                                            = 0
+mprotect@SYS(0x7f28906df000, 4096, 1)                                                                      = 0
+munmap@SYS(0x7f28906d8000, 22425)                                                                          = 0
+__libc_start_main(0x401230, 1, 0x7ffcfb5c21e8, 0x401ea0 &lt;unfinished ...&gt;
+rindex("hostname", '/')                                                                                    = nil
+strcmp("hostname", "domainname")                                                                           = 4
+strcmp("hostname", "ypdomainname")                                                                         = -17
+strcmp("hostname", "nisdomainname")                                                                        = -6
+getopt_long(1, 0x7ffcfb5c21e8, "aAdfbF:h?iIsVy", 0x4028a0, nil)                                            = -1
+__errno_location()                                                                                         = 0x7f28906d56b0
+malloc(128 &lt;unfinished ...&gt;
+brk@SYS(nil)                                                                                               = 0x2386000
+brk@SYS(0x23a7000)                                                                                         = 0x23a7000
+brk@SYS(nil)                                                                                               = 0x23a7000
+&lt; malloc resumed&gt; )                                                                                     = 0x2386010
+gethostname( &lt;unfinished ...&gt;
+uname@SYS(0x7ffcfb5c1e40)                                                                                  = 0
+&lt; gethostname resumed&gt; "localhost.localdomain", 128)                                                    = 0
+memchr("localhost.localdomain", '\0', 128)                                                                 = 0x2386025
+puts("localhost.localdomain" &lt;unfinished ...&gt;
+fstat@SYS(1, 0x7ffcfb5c1ec0)                                                                               = 0
+mmap@SYS(nil, 4096, 3, 34, -1, 0)                                                                          = 0x7f28906dd000
+write@SYS(1, "localhost.localdomain\n", 22localhost.localdomain
+)                                                                = 22
+&lt; puts resumed&gt; )                                                                                       = 22
+exit_group@SYS(0 &lt;no return ...&gt;
++++ exited (status 0) +++
+            </code></pre>
+          </section>
+
+          <section>
+            <pre class="stretch"><code class="bash">
+# file /bin/hostname
+/bin/hostname: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked (uses shared libs), for GNU/Linux 2.6.32, BuildID[sha1]=c2b88b145e890709f0a93fdab448bfc40d10eb18, stripped</code></pre>
+          </section>
+
+          <section>
+            <img src="elf.png" width=50%>
+          </section>
+          <section>
+            <h1>Executable</h1>
+            and
+            <h1>Linkable</h1>
+            <h1>Format</h1>
+          </section>
+
+          <section>
+            <aside class="notes">
+              ELF contains information about what libraries are needed by the executable.
+              show objdump, ldd all that fun
+            </aside>
+            <pre class="stretch"><code class="bash">
+# ldd /bin/hostname
+	linux-vdso.so.1 =>  (0x00007ffcda7dd000)
+	libnsl.so.1 => /lib64/libnsl.so.1 (0x00007f43c4f06000)
+	libc.so.6 => /lib64/libc.so.6 (0x00007f43c4b39000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007f43c5120000)
+# objdump -R /bin/hostname
+
+/bin/hostname:     file format elf64-x86-64
+
+DYNAMIC RELOCATION RECORDS
+OFFSET           TYPE              VALUE
+...
+0000000000603140 R_X86_64_JUMP_SLOT  gethostname@GLIBC_2.2.5
+# man ld.so</code></pre>
+          </section>
+
           <section>
             <h1>Linker</h1>
+            <h2>ld.so</h2>
             <h2>/etc/ld.so.conf</h2>
-
+            <h2>/lib64/ld-linux-x86_64.so.2</h2>
           </section>
-        </section>
-        <!-- end of story section, into terminal -->
-        <section>Documentation<br>
-          <span id="terminal-iframe">
-            <script>
-              if ( window.location == window.parent.location ) {
-                //document.getElementById('terminal-iframe').innerHTML = "<iframe width=1024px height=600px class=ttyd src='http://localhost:8081'>Documentation</iframe>";
-                document.getElementById('terminal-iframe').innerHTML = "<div><object type=text/html width=1024px height=600px class=ttyd data='http://localhost:8081'></object></div>";
 
-              } else {
-                document.getElementById('terminal-iframe').innerHTML = "In Speaker View";
-              }
-            </script>
-          </span>
+          <section>
+            <aside class="notes">
+              LD_PRELOAD, how to preload stuff, so now we get into the meat...
+              So now we know how to fix this, we can just intercept the call to gethostname
+            </aside>
+            <h1>LD_PRELOAD</h1>
+            <p align=left>A list of additional, user-specified, ELF shared libraries to be loaded before all others.</p>
+          </section>
+
         </section>
+        <!-- end of background section, into solution -->
+        <section>
+          <section>
+            <aside class="notes">
+              So to effectively debug a system, you will need to know some very basic C
+              Don't try running away now, it's too late.
+            </aside>
+            <h1>You cannot escape</h1>
+            <img src="prisoner.jpg">
+            <em>wikipedia.org</em>
+          </section>
+
+          <section>
+# man gethostname
+# show just the beginning
+Then another slide with our code.
+ 
+          </section>
+
+          <section>Solution<br>
+            <span id="terminal-iframe">
+              <script>
+                if ( window.location == window.parent.location ) {
+                  document.getElementById('terminal-iframe').innerHTML = "<div><object type=text/html width=1024px height=600px class=ttyd data='http://localhost:8081'></object></div>";
+                } else {
+                  document.getElementById('terminal-iframe').innerHTML = "In Speaker View";
+                }
+              </script>
+            </span>
+          </section>
+        </section> 
+
         <section>
           <section>
             Troubleshooting

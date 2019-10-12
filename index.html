@@ -366,24 +366,48 @@ OFFSET           TYPE              VALUE
               Don't try running away now, it's too late.
             </aside>
             <h1>You cannot escape</h1>
-            <img src="prisoner.jpg">
-            <em>wikipedia.org</em>
+            <img src="prisoner.jpg"><br>
+            <small class="caption">wikipedia.org</small>
           </section>
 
           <section>
-# man gethostname
-# show just the beginning
-Then another slide with our code.
- 
+            <aside class="notes">
+              man gethostname shows everything we need to know about gethostname
+            </aside>
+            <h1>gethostname</h1>
+            <pre class="stretch"><code class="bash">
+#include &lt;unistd.h&gt;
+
+int gethostname(char *name, size_t len);</code></pre>
+          </section>
+          
+          <section>
+            <aside class="notes">
+              So all we need to go is make a string (an array of char) with the hostname we want and copy that into the name pointer location.
+              the memory has already been allocated for us, so we don't have to worry about that either.
+            </aside>
+            <h1>getip_wrapper.c</h1>
+            <pre class="stretch"><code class="bash">
+#include &lt;unistd.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int gethostname (char *name, size_t len) {
+  char newname[] = "getip_hostname";
+  int name_len = strlen(newname);
+  memcpy(name,newname, name_len &lt; len ? name_len : len);
+  return 0;
+}</code></pre>
           </section>
 
           <section>Solution<br>
-            <span id="terminal-iframe">
+            <span id="solution-iframe">
               <script>
                 if ( window.location == window.parent.location ) {
-                  document.getElementById('terminal-iframe').innerHTML = "<div><object type=text/html width=1024px height=600px class=ttyd data='http://localhost:8081'></object></div>";
+                  document.getElementById('solution-iframe').innerHTML = "<div><object type=text/html width=1024px height=600px class=ttyd data='http://localhost:8081'></object></div>";
                 } else {
-                  document.getElementById('terminal-iframe').innerHTML = "In Speaker View";
+                  document.getElementById('solution-iframe').innerHTML = "In Speaker View";
                 }
               </script>
             </span>

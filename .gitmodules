@@ -1,0 +1,3 @@
+[submodule "troubleshootinglinux"]
+	path = troubleshootinglinux
+	url = git@github.com:uphillian/troubleshootinglinux.git

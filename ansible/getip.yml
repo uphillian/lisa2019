@@ -5,8 +5,22 @@
   - name: gcc and debuginfo rpms
     yum:
       name:
+        - gcc
         - gdb
+        - epel-release
         - ltrace
       state: present
+  - name: pip
+    yum:
+      name:
+        - python-pip
+  - name: asciinema playback
+    pip:
+      name: bottle
   - name: debuginfo install
     shell: debuginfo-install -y glibc-common bzip2-libs elfutils-libelf elfutils-libs libattr libcap libgcc systemd-libs xz-libs zlib
+  - name: bashrc updates
+    copy:
+      content: "export PATH=$PATH:/usr/local/bin\nalias ar='asciinema rec'\nalias ap='asciinema play'"
+      dest: /etc/profile.d/getip.sh
+

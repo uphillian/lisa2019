@@ -326,10 +326,10 @@ exit_group@SYS(0 &lt;no return ...&gt;
             </aside>
             <pre class="stretch"><code class="bash">
 # ldd /bin/hostname
-	linux-vdso.so.1 =>  (0x00007ffcda7dd000)
-	libnsl.so.1 => /lib64/libnsl.so.1 (0x00007f43c4f06000)
-	libc.so.6 => /lib64/libc.so.6 (0x00007f43c4b39000)
-	/lib64/ld-linux-x86-64.so.2 (0x00007f43c5120000)
+    linux-vdso.so.1 =>  (0x00007ffcda7dd000)
+    libnsl.so.1 => /lib64/libnsl.so.1 (0x00007f43c4f06000)
+    libc.so.6 => /lib64/libc.so.6 (0x00007f43c4b39000)
+    /lib64/ld-linux-x86-64.so.2 (0x00007f43c5120000)
 # objdump -R /bin/hostname
 
 /bin/hostname:     file format elf64-x86-64
@@ -372,6 +372,51 @@ OFFSET           TYPE              VALUE
 
           <section>
             <aside class="notes">
+              When we initially looked at the problem, I ran ltrace and worked out the important
+              syscalls.  I've recreated those in a little application called getip.
+              There are three syscalls
+              gethostname
+              gethostbyname
+              inet_ntoa
+
+              We could intervene with LD_PRELOAD to any one of these.
+              The simplest is gethostname
+            </aside>
+            <h1>getip.c</h1>
+            <pre class="stretch"><code class="bash">
+#include &lt;netdb.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;netinet/in.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;arpa/inet.h&gt;
+
+int main()
+{
+  char hostname[256];
+  char *IPbuffer;
+  struct hostent *hostStruct;
+  int h;
+
+  gethostname(hostname, sizeof(hostname));
+
+  hostStruct = gethostbyname(hostname);
+
+  if (hostStruct) {
+    IPbuffer = inet_ntoa(*((struct in_addr*) hostStruct->h_addr_list[0]));
+    printf("Using IP: %s\n", IPbuffer);
+    return 0;
+  } else {
+    printf("Couldn't find IP for %s\n", hostname);
+    return 1;
+  }
+}</code></pre>
+          </section>
+
+          <section>
+            <aside class="notes">
               man gethostname shows everything we need to know about gethostname
             </aside>
             <h1>gethostname</h1>
@@ -380,7 +425,7 @@ OFFSET           TYPE              VALUE
 
 int gethostname(char *name, size_t len);</code></pre>
           </section>
-          
+
           <section>
             <aside class="notes">
               So all we need to go is make a string (an array of char) with the hostname we want and copy that into the name pointer location.
@@ -402,6 +447,10 @@ int gethostname (char *name, size_t len) {
           </section>
 
           <section>Solution<br>
+            <aside class="notes">
+              cd /vagrant
+              ap wrapper.cast
+            </aside>
             <span id="solution-iframe">
               <script>
                 if ( window.location == window.parent.location ) {
@@ -412,7 +461,7 @@ int gethostname (char *name, size_t len) {
               </script>
             </span>
           </section>
-        </section> 
+        </section>
 
         <section>
           <section>

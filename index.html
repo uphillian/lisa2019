@@ -321,6 +321,18 @@ exit_group@SYS(0 &lt;no return ...&gt;
 
           <section>
             <aside class="notes">
+              What do we mean by linkable? Objects are linkable, you can link to other shared libraries.
+              What's in charge of that? the linker.
+            </aside>
+            <h1>Linker</h1>
+            <h2>ld.so</h2>
+            <h2>/etc/ld.so.conf</h2>
+            <h2>/lib64/ld-linux-x86_64.so.2</h2>
+            <h1>man ld.so</h1>
+          </section>
+
+          <section>
+            <aside class="notes">
               ELF contains information about what libraries are needed by the executable.
               show objdump, ldd all that fun
             </aside>
@@ -342,19 +354,31 @@ OFFSET           TYPE              VALUE
           </section>
 
           <section>
-            <h1>Linker</h1>
-            <h2>ld.so</h2>
-            <h2>/etc/ld.so.conf</h2>
-            <h2>/lib64/ld-linux-x86_64.so.2</h2>
-          </section>
-
-          <section>
             <aside class="notes">
               LD_PRELOAD, how to preload stuff, so now we get into the meat...
               So now we know how to fix this, we can just intercept the call to gethostname
             </aside>
             <h1>LD_PRELOAD</h1>
             <p align=left>A list of additional, user-specified, ELF shared libraries to be loaded before all others.</p>
+          </section>
+
+          <section>
+            <aside class="notes">
+            </aside>
+            <h1>LD_DEBUG</h1>
+            <pre><code class="bash">
+# LD_DEBUG=help /bin/true
+Valid options for the LD_DEBUG environment variable are:
+
+  libs        display library search paths
+  reloc       display relocation processing
+  files       display progress for input file
+...
+# LD_DEBUG=versions /bin/true
+checking for version `GLIBC_2.3' in file /lib64/libc.so.6 [0] required by file /bin/true [0]
+checking for version `GLIBC_2.3.4' in file /lib64/libc.so.6 [0] required by file /bin/true [0]
+checking for version `GLIBC_2.14' in file /lib64/libc.so.6 [0] required by file /bin/true [0]
+            </code></pre>
           </section>
 
         </section>
@@ -482,7 +506,34 @@ int gethostname (char *name, size_t len) {
           </section>
 
           <section>
-            Booting process
+            <h1>More background</h1>
+          </section>
+          <section>
+            <h1>Booting process</h1>
+            <table style="background: none">
+              <tr>
+                <td bgcolor=lightsteelblue class=fragment data-fragment-index=1>
+                  BIOS
+                </td>
+                <td bgcolor=lightsteelblue class=fragment data-fragment-index=2>
+                  Bootsector
+                </td>
+                <td bgcolor=lightsteelblue>
+                  <span class=fragment data-fragment-index=3>Bootloader</span>
+                </td>
+                <td style="border: none" class=fragment data-fragment-index=5><font color="white">LOADLIN
+                    LILO GNU GRUB</font>
+                </td>
+              </tr>
+              <tr>
+                <td style="border: none"></td>
+                <td style="border: none"></td>
+                <td bgcolor=lavender align=center>
+                  <span class=fragment data-fragment-index=4><font color=darkred>Kernel<font></span>
+                </td>
+              </tr>
+            </table>
+
           </section>
 
           <section>

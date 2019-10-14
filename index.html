@@ -463,14 +463,68 @@ int gethostname (char *name, size_t len) {
           </section>
         </section>
 
+        <!-- more background info (high level -->
         <section>
           <section>
-            Troubleshooting
+            <aside class="notes">
+              This is one of the most pithy things I've heard in a movie.
+              remember this while you are trying to troubleshoot a problem
+            </aside>
+            <p align=left>
+              It's a machine, Skroeder.<br>
+              It doesn't get pissed off.<br>
+              It doesn't get happy,<br>
+              it doesn't get sad,<br>
+              it doesn't laugh at your jokes.<br>
+              It just runs programs.<br>
+            </p>
+            <small class="caption">Short Circuit</small>
+          </section>
+
+          <section>
+            Booting process
+          </section>
+
+          <section>
+            processes and forking
+          </section>
+          <section>
+            doublefork
+            <pre class="stretch"><code class="python">
+#!/usr/bin/env python
+
+import os
+import time
+
+pid = os.fork()
+if pid == 0:
+  print("Child")
+  pid = os.fork()
+  if pid == 0:
+    print("Grandchild")
+    while True:
+      time.sleep(1)
+else:
+  print("Parent, Child PID: %s" % pid)</code></pre>
           </section>
         </section>
+
+        <!-- troubleshooting basics -->
         <section>
-          Questions?
-          <span class="fragment">Thank-you</span>
+          <section>
+            <h1>Troubleshooting</h1>
+          </section>
+
+          <section>
+            the list:
+            change one thing at a time.
+            check permissions
+          </section>
+        </section>
+
+        <section>
+          <h1>Questions?</h1>
+          <span class="fragment"><h2>Thank-you</h2></span>
         </section>
       </div>
     </div>

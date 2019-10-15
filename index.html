@@ -509,6 +509,12 @@ int gethostname (char *name, size_t len) {
             <h1>More background</h1>
           </section>
           <section>
+            <aside class="notes">
+               when the machine turns on, it loads 512 bytes from sector 0 of the first disk.
+               those 512 bytes have enough instructions to load the rest of the boot program.
+               the boot program stars the kernel, the kernel by convention if process 0, it does not appear 
+               in the process list.
+            </aside>
             <h1>Booting process</h1>
             <table style="background: none">
               <tr>
@@ -516,20 +522,19 @@ int gethostname (char *name, size_t len) {
                   BIOS
                 </td>
                 <td bgcolor=lightsteelblue class=fragment data-fragment-index=2>
-                  Bootsector
+                  Bootsector<br>0
                 </td>
-                <td bgcolor=lightsteelblue>
-                  <span class=fragment data-fragment-index=3>Bootloader</span>
+                <td bgcolor=lightsteelblue class=fragment data-fragment-index=3>
+                  Bootloader<br>512
                 </td>
-                <td style="border: none" class=fragment data-fragment-index=5><font color="white">LOADLIN
-                    LILO GNU GRUB</font>
+                <td style="border: none" class=fragment data-fragment-index=5><font size=-1em color="white">LOADLIN<br>
+                    LILO<br>GNU GRUB</font>
                 </td>
               </tr>
               <tr>
                 <td style="border: none"></td>
                 <td style="border: none"></td>
-                <td bgcolor=lavender align=center>
-                  <span class=fragment data-fragment-index=4><font color=darkred>Kernel<font></span>
+                <td bgcolor=lavender class=fragment data-fragment-index=4><font color=darkred>Kernel<br>[0]<font>
                 </td>
               </tr>
             </table>

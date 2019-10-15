@@ -508,6 +508,7 @@ int gethostname (char *name, size_t len) {
           <section>
             <h1>More background</h1>
           </section>
+
           <section>
             <aside class="notes">
                when the machine turns on, it loads 512 bytes from sector 0 of the first disk.
@@ -527,23 +528,30 @@ int gethostname (char *name, size_t len) {
                 <td bgcolor=lightsteelblue class=fragment data-fragment-index=3>
                   Bootloader<br>512
                 </td>
-                <td style="border: none" class=fragment data-fragment-index=5><font size=-1em color="white">LOADLIN<br>
-                    LILO<br>GNU GRUB</font>
-                </td>
               </tr>
               <tr>
                 <td style="border: none"></td>
                 <td style="border: none"></td>
-                <td bgcolor=lavender class=fragment data-fragment-index=4><font color=darkred>Kernel<br>[0]<font>
-                </td>
+                <td bgcolor=lavender class=fragment data-fragment-index=4><font color=darkred>Kernel<br>[0]<font></td>
+                <td bgcolor=tan class=fragment data-fragment-index=5>init<br>1</td>
               </tr>
             </table>
-
           </section>
 
           <section>
-            processes and forking
+            <aside class="notes">
+              init/sysinit/systemd/upstart, whatever, it's job is to schedule all the userland processes.
+              talk about pid 2, the pid's with [] around them kthreadd is 2.
+              Show the real command with awk
+              awk first line, sort rest.
+            </aside>
+            <h1>Processes</h1>
+            <h2>fork</h2>
+            <h3>parent/child/sibling</h3>
+            <pre><code class="bash">
+ps -eo "%P %p %c" |sort -n |less</code></pre>
           </section>
+
           <section>
             doublefork
             <pre class="stretch"><code class="python">
@@ -562,6 +570,20 @@ if pid == 0:
       time.sleep(1)
 else:
   print("Parent, Child PID: %s" % pid)</code></pre>
+          </section>
+
+          <section>
+            <aside class="notes">
+              note that when we run doublefork, the grandchild's parent is now 1
+              try it in your own session with systemd, you get your systemd as owner.
+            </aside>
+          </section>
+
+          <section>
+            <aside class="notes">
+              now we mention the filesystems and show how to look around in /proc for things
+
+            </aside>
           </section>
         </section>
 

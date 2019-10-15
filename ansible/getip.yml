@@ -21,7 +21,7 @@
 
   - name: bashrc updates
     copy:
-      content: "export PATH=$PATH:/usr/local/bin\nalias ar='asciinema rec'\nalias ap='asciinema play'"
+      src:  ./getip.sh
       dest: /etc/profile.d/getip.sh
   - name: hosts entry for getip_hostname
     lineinfile:

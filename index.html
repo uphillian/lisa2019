@@ -546,10 +546,63 @@ int gethostname (char *name, size_t len) {
               awk first line, sort rest.
             </aside>
             <h1>Processes</h1>
-            <h2>fork</h2>
-            <h3>parent/child/sibling</h3>
+            <h2 class="fragment">fork</h2>
+            <img class="fragment" src="./fork-small.jpg">
+
+          </section>
+
+          <section>
+            <aside class="notes">
+              ask them to run this themselves.
+              Show the version in tutorial, go run that it's better.
+              ap ps.cast
+              (ps -eo "%P %p %c" |awk 'NR==1' && ps -eo "%P %p %c" | grep -v PPID|sort -n) |less
+              psx psk
+
+              Show how the only two who are children of the kernel are the init and the kthreadd
+              show how everyone who is a child of 2 is a kernel process.
+              ps aux |grep \\[ |sort |less
+
+
+            </aside>
+            <h1>parent/child/sibling</h1>
             <pre><code class="bash">
 ps -eo "%P %p %c" |sort -n |less</code></pre>
+          </section>
+
+          <section>
+            <h1>fake filesystems</h1>
+            <img class="fragment" src="fake.png">
+            <table>
+              <tr>
+                <td class="fragment">/proc</td>
+                <td class="fragment">/sys</td>
+              </tr>
+            </table>
+          </section>
+
+          <section>Processes<br>
+            <aside class="notes">
+              Show psx, then psk
+              cat /proc/cmdline
+              cd /proc/1
+              cat cmdline
+              cat environ
+              cd /proc/$$
+              cat environ
+              tail -f /dev/null
+              change to another terminal
+              echo "LISA 2019!" >/proc/(pidof tail)/fd/1
+            </aside>
+            <span id="processes-iframe">
+              <script>
+                if ( window.location == window.parent.location ) {
+                  document.getElementById('processes-iframe').innerHTML = "<div><object type=text/html width=1024px height=600px class=ttyd data='http://localhost:8081'></object></div>";
+                } else {
+                  document.getElementById('processes-iframe').innerHTML = "In Speaker View";
+                }
+              </script>
+            </span>
           </section>
 
           <section>

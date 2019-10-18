@@ -11,6 +11,8 @@
         - lsof
         - ltrace
         - python3-pip
+        - strace
+        - tmux
       state: present
 
   - name: asciinema playback
@@ -23,8 +25,22 @@
     copy:
       src:  ./getip.sh
       dest: /etc/profile.d/getip.sh
+  - name: set limits on user foo
+    copy:
+      src: ./30-foo.conf
+      dest: /etc/security/limits.d/30-foo.conf
   - name: hosts entry for getip_hostname
     lineinfile:
       dest: /etc/hosts
       line: "1.1.1.1     getip_hostname"
       state: present
+  - name: foo group
+    group:
+      name: foo
+
+  - name: foo user (limits demo)
+    user:
+      name: foo
+      comment: Foo Bar
+      uid: 1040
+      group: foo

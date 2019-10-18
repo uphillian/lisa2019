@@ -606,6 +606,17 @@ ps -eo "%P %p %c" |sort -n |less</code></pre>
           </section>
 
           <section>
+            <aside class="notes">
+              talk about file descriptors
+              you have input 0 output 1 error 2
+              go backup and run ap fd.cast
+
+            </aside>
+            <h1>File Descriptors</h1>
+          </section>
+        </section>
+
+          <section>
             doublefork
             <pre class="stretch"><code class="python">
 #!/usr/bin/env python
@@ -633,14 +644,6 @@ else:
             go backup and show fork and doublefork output I'd say
           </section>
 
-          <section>
-            <aside class="notes">
-              now we mention the filesystems and show how to look around in /proc for things
-
-            </aside>
-            talk about stuff in /proc
-          </section>
-        </section>
 
         <section>
           <section>

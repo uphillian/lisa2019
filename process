@@ -1,0 +1,20 @@
+start fork &
+psg fork
+start doublefork
+psg doublefork
+show parent 
+psg parent pid to show systemd 
+kill fork parent              
+psg fork                     
+should see systemd took it  
+./zombie &                 
+psg python                
+see the defunct Z status 
+kill -9 zombie          
+kill -9 zombie         
+kill -9 zombie        
+it won't die, it's already dead.
+kill -SIGALRM parent           
+psg python                    
+zombie is gone               
+end of ps demo

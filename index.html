@@ -565,7 +565,7 @@ int gethostname (char *name, size_t len) {
 
 
             </aside>
-            <h1>parent/child/sibling</h1>
+            <h1>parent/child</h1>
             <pre><code class="bash">
 ps -eo "%P %p %c" |sort -n |less</code></pre>
           </section>
@@ -590,9 +590,6 @@ ps -eo "%P %p %c" |sort -n |less</code></pre>
               cat environ
               cd /proc/$$
               cat environ
-              tail -f /dev/null
-              change to another terminal
-              echo "LISA 2019!" >/proc/(pidof tail)/fd/1
             </aside>
             <span id="processes-iframe">
               <script>
@@ -607,14 +604,29 @@ ps -eo "%P %p %c" |sort -n |less</code></pre>
 
           <section>
             <aside class="notes">
-              talk about file descriptors
+              No unix talk is complete without the phrase,
+              everything is a file.
+              The kernel displays process internals as files in /proc
+              You can view the STDIN STDOUT and STDERR
               you have input 0 output 1 error 2
               go backup and run ap fd.cast
 
             </aside>
             <h1>File Descriptors</h1>
+            <h2 class="fragment">everything is a file...</h2>
+            <table>
+              <tr>
+                <td class="fragment" data-fragment-index=5>STDIN</td>
+                <td class="fragment" data-fragment-index=10>STDOUT</td>
+                <td class="fragment" data-fragment-index=15>STDERR</td>
+              </tr>
+              <tr>
+                <td class="fragment" data-fragment-index=5 align=center>0</td>
+                <td class="fragment" data-fragment-index=10 align=center>1</td>
+                <td class="fragment" data-fragment-index=15 align=center>2</td>
+              </tr>
+            </table>
           </section>
-        </section>
 
           <section>
             doublefork
@@ -641,9 +653,10 @@ else:
               note that when we run doublefork, the grandchild's parent is now 1
               try it in your own session with systemd, you get your systemd as owner.
             </aside>
-            go backup and show fork and doublefork output I'd say
+            fork<br>
+            doublefork<br>
           </section>
-
+        </section>
 
         <section>
           <section>

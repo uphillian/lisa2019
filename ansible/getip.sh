@@ -6,6 +6,6 @@ alias psk="(ps aux | awk 'NR==1' && ps aux |grep -E \\\\[\|\\\\] |grep -vE grep\
 alias brc=". ~/.bashrc && echo reread .bashrc"
 function psg() {
   thing=$1
-  ps -eo "%P %p %c %a" |awk 'NR==1'
-  ps -eo "%P %p %c %a" |grep -w $thing |grep -v grep
+  ps -eo "ppid pid stat cmd" |awk 'NR==1'
+  ps -eo "ppid pid stat cmd" |grep -w $thing |grep -v grep
 }

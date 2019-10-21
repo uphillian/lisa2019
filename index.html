@@ -26,10 +26,11 @@
     </script>
     <style>
       body:after {
-        content: url(./lisa50.png);
+        content: "http://bit.ly/33NpWEk " url(./lisa50.png);
         position: fixed;
         bottom: 3.5em;
         right: 3.5em;
+        color: white;
         box-shadow: 5px 5px 10px #000; }
      </style>
   </head>
@@ -44,6 +45,11 @@
             <h1>Me</h1>
             <a href="https://www.google.com/search?q=Thomas+Uphill"><img src="./author.png"></a>
             <h2>consulting@uphillian.com</h2>
+          </section>
+          <section>
+            <h1>Resources</h1>
+            <h4><a href="https://github.com/uphillian/lisa2019">https://github.com/uphillian/lisa2019</a></h4>
+            <h4><a href="https://github.com/uphillian/troubleshootinglinux">https://github.com/uphillian/troubleshootinglinux</a></h4>
           </section>
         </section>
 
@@ -115,10 +121,11 @@
                They had to be stingy with space, they reused everything they could and came up with the model we use today.
                And there was a method to the madness, KISS, keep it simple stupid
              </aside>
-             <span class="fragment fade-in"><img src="./tape.png">
-               <span class="fragment fade-in"><h1>Love Ken</h1></span>
-               <span class="fragment fade-in"><img src="./pdp7.png"></span>
-                 <span class="fragment fade-in"><h1>KISS</h1></span>
+             <span>
+               <span class="fragment fade-in"><img src="./pdp7.png"><br></span>
+               <span class="fragment fade-in"><img src="./tape.png"><br></span>
+             <span class="fragment fade-in"><h1>Love Ken</h1></span>
+               <span class="fragment fade-in"><h1>KISS</h1></span>
              </span>
            </section>
         </section>
@@ -193,17 +200,6 @@
             <h1>Documentation</h1>
             <span class="fragment fade-in"><img src="./morpheus.jpg"></span>
             <span class="fragment fade-in"><h2>man syscalls</h2></span>
-          </section>
-          <section>Documentation<br>
-            <span id="terminal-iframe">
-              <script>
-                if ( window.location == window.parent.location ) {
-                  document.getElementById('terminal-iframe').innerHTML = "<div><object type=text/html width=1024px height=600px class=ttyd data='http://localhost:8081'></object></div>";
-                } else {
-                  document.getElementById('terminal-iframe').innerHTML = "In Speaker View";
-                }
-              </script>
-            </span>
           </section>
 
           <section>
@@ -383,6 +379,22 @@ checking for version `GLIBC_2.14' in file /lib64/libc.so.6 [0] required by file 
 
         </section>
         <!-- end of background section, into solution -->
+
+        <!-- terminal -->
+        <section> 
+          <section>Terminal<br>
+            <span id="terminal-iframe">
+              <script>
+                if ( window.location == window.parent.location ) {
+                  document.getElementById('terminal-iframe').innerHTML = "<div><object type=text/html width=1024px height=600px class=ttyd data='http://localhost:8081'></object></div>";
+                } else {
+                  document.getElementById('terminal-iframe').innerHTML = "In Speaker View";
+                }
+              </script>
+            </span>
+          </section>
+        </section>
+
         <section>
           <section>
             <aside class="notes">
@@ -475,15 +487,6 @@ int gethostname (char *name, size_t len) {
               cd /vagrant
               ap wrapper.cast
             </aside>
-            <span id="solution-iframe">
-              <script>
-                if ( window.location == window.parent.location ) {
-                  document.getElementById('solution-iframe').innerHTML = "<div><object type=text/html width=1024px height=600px class=ttyd data='http://localhost:8081'></object></div>";
-                } else {
-                  document.getElementById('solution-iframe').innerHTML = "In Speaker View";
-                }
-              </script>
-            </span>
           </section>
           <section>
             <aside class="notes">
@@ -599,26 +602,6 @@ ps -eo "%P %p %c" |sort -n |less</code></pre>
             </table>
           </section>
 
-          <section>Processes<br>
-            <aside class="notes">
-              Show psx, then psk
-              cat /proc/cmdline
-              cd /proc/1
-              cat cmdline
-              cat environ
-              cd /proc/$$
-              cat environ
-            </aside>
-            <span id="processes-iframe">
-              <script>
-                if ( window.location == window.parent.location ) {
-                  document.getElementById('processes-iframe').innerHTML = "<div><object type=text/html width=1024px height=600px class=ttyd data='http://localhost:8081'></object></div>";
-                } else {
-                  document.getElementById('processes-iframe').innerHTML = "In Speaker View";
-                }
-              </script>
-            </span>
-          </section>
 
           <section>
             <aside class="notes">
@@ -647,7 +630,31 @@ ps -eo "%P %p %c" |sort -n |less</code></pre>
           </section>
 
           <section>
-            doublefork
+            <aside class="notes">
+              man fork
+              fork is how unix creates new processes.
+              double fork ensures that the calling process has no children
+              the grandchild process has no parent. Orphaned processes are reaped by init (systemd)
+              
+            </aside>
+            <h1>Processes</h1>
+            <table>
+              <tr>
+                <td class="fragment" align=center>fork
+                  <img height=200px src="./fork-small.jpg">
+                </td>
+                <td class="fragment" align=center>double fork
+                  <img height=200px src="./doublefork.png">
+                </td>
+                <td class="fragment" align=center>zombie
+                  <img height=200px src="./zombie.png">
+                </td>
+              </tr>
+            </table>
+
+          </section>
+          <section>
+            fork
             <pre class="stretch"><code class="python">
 #!/usr/bin/env python
 
@@ -657,13 +664,39 @@ import time
 pid = os.fork()
 if pid == 0:
   print("Child")
+  while True:
+    time.sleep(10)
+else:
+  print("Parent, Child PID: %s" % pid)
+  while True:
+    time.sleep(10)
+</code></pre>
+          </section>
+          <section>
+            doublefork
+            <pre class="stretch"><code class="python">
+#!/usr/bin/env python
+
+import os
+import time
+
+pid = os.fork()
+if pid == 0:
   pid = os.fork()
   if pid == 0:
-    print("Grandchild")
+    print("I am the Grandchild(%s)\n" % os.getpid())
     while True:
-      time.sleep(1)
+      time.sleep(10)
+  else:
+    print("I am the Child(%s), Grandchild(%s)\n" % (os.getpid(),pid))
 else:
-  print("Parent, Child PID: %s" % pid)</code></pre>
+  print("I am the Parent(%s), my Child(%s)\n" % (os.getpid(),pid))</code></pre>
+          </section>
+
+          <section>
+            zombie
+            <pre class="stretch"><code class="python">
+</code></pre>
           </section>
 
           <section>
@@ -678,7 +711,28 @@ else:
             zombie<br>
           </section>
         </section>
-
+        <section>
+          <section>Terminal<br>
+            <aside class="notes">
+              Show psx, then psk
+              cat /proc/cmdline
+              cd /proc/1
+              cat cmdline
+              cat environ
+              cd /proc/$$
+              cat environ
+            </aside>
+            <span id="processes-iframe">
+              <script>
+                if ( window.location == window.parent.location ) {
+                  document.getElementById('processes-iframe').innerHTML = "<div><object type=text/html width=1024px height=600px class=ttyd data='http://localhost:8081'></object></div>";
+                } else {
+                  document.getElementById('processes-iframe').innerHTML = "In Speaker View";
+                }
+              </script>
+            </span>
+          </section>
+        </section>
         <section>
           <section>
             <aside class="notes">
@@ -698,7 +752,7 @@ else:
               (gdb) call open("/vagrant/fd",66,0666)
               $2 = 4
               (gdb) call dup2(4,3)
-              $3 = 3
+              k3 = 3
               (gdb) call close(4)
               $4 = 0
               (gdb) detach
@@ -748,5 +802,23 @@ else:
         ]
       });
     </script>
+<!--  <script>
+    document.addEventListener("keydown",function(ev) {
+      console.log(ev.keyCode);
+      if(ev.keyCode == 'Escape') {
+        ev.preventDefault();
+        return false;
+      } else if(ev.keyCode == 'f') {
+    document.body.requestFullscreen().then(
+      () => {
+        const keys = [
+          { code: 'Escape' },
+          ];
+        navigator.requestSystemKeyboardLock(keys);
+    });
+
+      } 
+    })
+</script>-->
   </body>
 </html>

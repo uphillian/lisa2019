@@ -64,13 +64,13 @@
           <section>
             <span class="fragment fade-in">DB
               <span class="fragment fade-in">⇨</span>
-              <span class="fragment fade-in">gethostbyname</span>
+              <span class="fragment fade-in">gethostname</span>
               <br><span class="fragment fade-in"><img valign="middle" height=10% src="./rainbow_unicorn200_right.png" border=0></span>
             </span>
             <p>
             <span class="fragment fade-in">Backup
               <span class="fragment fade-in">⇨</span>
-              <span class="fragment fade-in">gethostbyname</span>
+              <span class="fragment fade-in">gethostname</span>
               <br><span class="fragment fade-in"><img valign="middle" height=10% src="./rainbow_unicorn200_right.png" border=0></span>
             </span>
           </section>
@@ -78,13 +78,13 @@
           <section>
             <span class="fade-in">DB
               <span class="fade-in">⇨</span>
-              <span class="fade-in">gethostbyname</span>
+              <span class="fade-in">gethostname</span>
               <br><span class="fragment fade-in"><img valign="middle" height=10% src="./rainbow_unicorn200_right.png" border=0></span>
             </span>
             <p>
             <span class="fade-in">Backup
               <span class="fade-in">⇨</span>
-              <span class="fade-in">gethostbyname</span>
+              <span class="fade-in">gethostname</span>
               <br><span class="fragment fade-in"><img valign="middle" height=10% src="./rainbow_unicorn200_left.png" border=0></span>
             </span>
           </section>
@@ -93,9 +93,9 @@
             <aside class="notes">for the purposes of this talk, I've replaced the backup software with a program written in C which is functionally equivalent to the original backup program.
             We'll call it getip.
             getip returns the primary ip address of the machine on which it is running.
-            show gethostbyname in use. there are other examples but tar is good enough.
+            show gethostname in use. there are other examples but tar is good enough.
             show the below on a host without debuginfo, and one with it.
-            [root@localhost bin]# ltrace -e gethostbyname tar cf phoenix:foo.tar /etc/hosts
+            [root@localhost bin]# ltrace -e gethostname tar cf phoenix:foo.tar /etc/hosts
             </aside>
            </section>
 
@@ -455,7 +455,7 @@ int gethostname(char *name, size_t len);</code></pre>
               So all we need to go is make a string (an array of char) with the hostname we want and copy that into the name pointer location.
               the memory has already been allocated for us, so we don't have to worry about that either.
             </aside>
-            <h1>getip_wrapper.c</h1>
+            <h1>gethostname_wrap.c</h1>
             <pre class="stretch"><code class="bash">
 #include &lt;unistd.h&gt;
 #include &lt;string.h&gt;
@@ -484,6 +484,15 @@ int gethostname (char *name, size_t len) {
                 }
               </script>
             </span>
+          </section>
+          <section>
+            <aside class="notes">
+              So now the two programs are working side by side compeltely oblivious to the fix.
+              We didn't need to recompile anything and we get our paycheck.
+              I hope this tale proves my point, that understanding how things work,
+              makes solutions simple.
+              So now a more about how things work
+            </aside>
           </section>
         </section>
 
@@ -515,6 +524,7 @@ int gethostname (char *name, size_t len) {
                those 512 bytes have enough instructions to load the rest of the boot program.
                the boot program stars the kernel, the kernel by convention if process 0, it does not appear 
                in the process list.
+               This is all due to the way things used to work...when you turned on a PC, it only knew how to load sectore 0
             </aside>
             <h1>Booting process</h1>
             <table style="background: none">
@@ -540,10 +550,12 @@ int gethostname (char *name, size_t len) {
 
           <section>
             <aside class="notes">
+              The kernel starts process 1, the kernel itself is process 0.
+              Process 1 has to start the other processes, it does this with fork
+              A process has a parent process id, ppid and a process id, pid.
+              when processes fork, they are essentially duplicated, they inherit copies of the memory and environment of their parent.
               init/sysinit/systemd/upstart, whatever, it's job is to schedule all the userland processes.
               talk about pid 2, the pid's with [] around them kthreadd is 2.
-              Show the real command with awk
-              awk first line, sort rest.
             </aside>
             <h1>Processes</h1>
             <h2 class="fragment">fork</h2>
@@ -556,8 +568,9 @@ int gethostname (char *name, size_t len) {
               ask them to run this themselves.
               Show the version in tutorial, go run that it's better.
               ap ps.cast
-              (ps -eo "%P %p %c" |awk 'NR==1' && ps -eo "%P %p %c" | grep -v PPID|sort -n) |less
-              psx psk
+              psg 
+              psx
+              psk
 
               Show how the only two who are children of the kernel are the init and the kthreadd
               show how everyone who is a child of 2 is a kernel process.
@@ -571,6 +584,11 @@ ps -eo "%P %p %c" |sort -n |less</code></pre>
           </section>
 
           <section>
+            <aside class="notes">
+              The kernel allows you to see inside it's process tables and view data.
+              It does this with fake filesystems.
+              We'll talk about /proc the most in this talk but /sys is also worth looking around in.
+            </aside>
             <h1>fake filesystems</h1>
             <img class="fragment" src="fake.png">
             <table>
@@ -607,8 +625,8 @@ ps -eo "%P %p %c" |sort -n |less</code></pre>
               No unix talk is complete without the phrase,
               everything is a file.
               The kernel displays process internals as files in /proc
+              every process has at least 3 file handles / file descriptors.
               You can view the STDIN STDOUT and STDERR
-              you have input 0 output 1 error 2
               go backup and run ap fd.cast
 
             </aside>
@@ -652,18 +670,46 @@ else:
             <aside class="notes">
               note that when we run doublefork, the grandchild's parent is now 1
               try it in your own session with systemd, you get your systemd as owner.
+              you can't kill a zombie, they are already dead.
+              check the status, it Z
             </aside>
             fork<br>
             doublefork<br>
+            zombie<br>
           </section>
         </section>
 
         <section>
           <section>
-            Another story
+            <aside class="notes">
+              filesystem filling, nothing there. talk about fd and open files.
+              Two for the price of one.
+              In one scenario, we were writing to a file that was deleted.
+              In the second, we needed to get a running process to change the file it was writing to.
+              in the example, we have a long running single threaded cobol job, we don't have the symbol table, but we don't care
+              we get it to start writing onto the new filesystem and save the day.
+              paycheck coming again.
+
+              when doing gdb, remember to use " instead of ', you'll get the symbol problem.
+
+              use gdb instead, 
+              gdb -p $pid
+              $1 = 0
+              (gdb) call open("/vagrant/fd",66,0666)
+              $2 = 4
+              (gdb) call dup2(4,3)
+              $3 = 3
+              (gdb) call close(4)
+              $4 = 0
+              (gdb) detach
+
+              add this to the tutorial
+            </aside>
+            <h1>Another story</h1><img height="50%" src="./spoon.jpg" border="0">
           </section>
           <section>
-            filesystem filling, nothing there. talk about fd and open files.
+            I should now do the deleted file demo
+            
           </section>
         </section>
 

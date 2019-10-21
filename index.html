@@ -381,7 +381,7 @@ checking for version `GLIBC_2.14' in file /lib64/libc.so.6 [0] required by file 
         <!-- end of background section, into solution -->
 
         <!-- terminal -->
-        <section> 
+        <section>
           <section>Terminal<br>
             <span id="terminal-iframe">
               <script>
@@ -525,7 +525,7 @@ int gethostname (char *name, size_t len) {
             <aside class="notes">
                when the machine turns on, it loads 512 bytes from sector 0 of the first disk.
                those 512 bytes have enough instructions to load the rest of the boot program.
-               the boot program stars the kernel, the kernel by convention if process 0, it does not appear 
+               the boot program stars the kernel, the kernel by convention if process 0, it does not appear
                in the process list.
                This is all due to the way things used to work...when you turned on a PC, it only knew how to load sectore 0
             </aside>
@@ -571,7 +571,7 @@ int gethostname (char *name, size_t len) {
               ask them to run this themselves.
               Show the version in tutorial, go run that it's better.
               ap ps.cast
-              psg 
+              psg
               psx
               psk
 
@@ -635,7 +635,7 @@ ps -eo "%P %p %c" |sort -n |less</code></pre>
               fork is how unix creates new processes.
               double fork ensures that the calling process has no children
               the grandchild process has no parent. Orphaned processes are reaped by init (systemd)
-              
+
             </aside>
             <h1>Processes</h1>
             <table>
@@ -746,10 +746,10 @@ else:
 
               when doing gdb, remember to use " instead of ', you'll get the symbol problem.
 
-              use gdb instead, 
+              use gdb instead,
               gdb -p $pid
               $1 = 0
-              (gdb) call open("/vagrant/fd",66,0666)
+              (gdb) call open("/tmp/fd",0102,0666)
               $2 = 4
               (gdb) call dup2(4,3)
               k3 = 3
@@ -762,8 +762,24 @@ else:
             <h1>Another story</h1><img height="50%" src="./spoon.jpg" border="0">
           </section>
           <section>
-            I should now do the deleted file demo
-            
+            <pre><code class="nohighlight">
+# man open
+  SYNOPSIS
+    #include &lt;sys/types.h&gt;
+    #include &lt;sys/stat.h&gt;
+    #include &lt;fcntl.h&gt;</code></pre>
+            ... /usr/include/fcntl.h
+            <pre><code class="nohighlight" data-trim data-noescape>
+/* Get the definitions of O_*, F_*, FD_*: all the
+numbers and flag bits for `open', `fcntl', et al.  */
+#include &lt;bits/fcntl.h&gt;
+            </code></pre>
+            ... /usr/include/bits/fcntl.h
+            <pre><code class="nohighlight">
+#define O_RDWR         02
+#ifndef O_CREAT
+# define O_CREAT     0100 /* Not fcntl.  */
+#endif</code></pre>
           </section>
         </section>
 
@@ -817,7 +833,7 @@ else:
         navigator.requestSystemKeyboardLock(keys);
     });
 
-      } 
+      }
     })
 </script>-->
   </body>

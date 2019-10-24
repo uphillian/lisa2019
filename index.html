@@ -383,6 +383,12 @@ checking for version `GLIBC_2.14' in file /lib64/libc.so.6 [0] required by file 
         <!-- terminal -->
         <section>
           <section>Terminal<br>
+            <aside class="notes">
+              First time through we show the man pages.
+              Then we skip terminal and go to the "cannot escape slide"
+              For solution, ap wrapper.cast
+              For fd ap fd.cast
+            </aside>
             <span id="terminal-iframe">
               <script>
                 if ( window.location == window.parent.location ) {
@@ -484,12 +490,10 @@ int gethostname (char *name, size_t len) {
 
           <section>Solution<br>
             <aside class="notes">
+              go back to terminal, show solution
               cd /vagrant
               ap wrapper.cast
-            </aside>
-          </section>
-          <section>
-            <aside class="notes">
+
               So now the two programs are working side by side compeltely oblivious to the fix.
               We didn't need to recompile anything and we get our paycheck.
               I hope this tale proves my point, that understanding how things work,
@@ -583,7 +587,9 @@ int gethostname (char *name, size_t len) {
             </aside>
             <h1>parent/child</h1>
             <pre><code class="bash">
-ps -eo "%P %p %c" |sort -n |less</code></pre>
+$ ps -eo "ppid pid stat cmd" |sort -n |less
+$ psk
+            </code></pre>
           </section>
 
           <section>
@@ -640,13 +646,16 @@ ps -eo "%P %p %c" |sort -n |less</code></pre>
             <h1>Processes</h1>
             <table>
               <tr>
-                <td class="fragment" align=center>fork
+                <td class="fragment" align=center>fork<br>
                   <img height=200px src="./fork-small.jpg">
                 </td>
-                <td class="fragment" align=center>double fork
-                  <img height=200px src="./doublefork.png">
+                <td class="fragment" align=center>double fork<br>
+                  <div style="position:relative">
+                  <span class="fragment fade-out" style="position:absolute;margin-left: auto; margin-right: auto; left:0; right: 0;"><img height=200px src="./doublefork.png"></span>
+                  <span class="fragment fade-in" style="position:absolute;margin-left: auto; margin-right: auto; left:0; right: 0;"><img height=200px src="./beta-tree.png"></span>
+                  </div>
                 </td>
-                <td class="fragment" align=center>zombie
+                <td class="fragment" align=center>zombie<br>
                   <img height=200px src="./zombie.png">
                 </td>
               </tr>
@@ -780,6 +789,8 @@ numbers and flag bits for `open', `fcntl', et al.  */
 #ifndef O_CREAT
 # define O_CREAT     0100 /* Not fcntl.  */
 #endif</code></pre>
+          </section>
+          <section>
           </section>
         </section>
 

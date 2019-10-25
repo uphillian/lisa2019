@@ -771,6 +771,9 @@ else:
             <h1>Another story</h1><img height="50%" src="./spoon.jpg" border="0">
           </section>
           <section>
+            <aside class="notes">
+              This seems pretty difficult, but actually it's a fairly straightforward fix.
+            </aside>
             <pre><code class="nohighlight">
 # man open
   SYNOPSIS
@@ -791,6 +794,20 @@ numbers and flag bits for `open', `fcntl', et al.  */
 #endif</code></pre>
           </section>
           <section>
+            <aside class="notes">
+              The dup2 system call is used to duplicate a file descriptor. Since 
+            </aside>
+            <pre><code class="nohighlight">
+# man dup2
+int dup2(int oldfd, int newfd);
+
+dup2()
+  The dup2() system call performs the same task as dup(),
+  but instead of using the lowest-numbered unused file 
+  descriptor, it uses the file descriptor number specified
+  in newfd.  If the file descriptor newfd  was  previ‐
+  ously open, it is silently closed before being reused.
+            </code></pre>
           </section>
         </section>
 

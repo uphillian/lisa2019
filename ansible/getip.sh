@@ -8,6 +8,15 @@ function psg() {
   ps -eo "ppid pid stat cmd" |awk 'NR==1'
   ps -eo "ppid pid stat cmd" |grep -w $thing |grep -v grep
 }
+
+function pst () {
+  pids=$(pgrep $1)
+  for pid in $pids
+  do
+    ps -eo "ppid pid stat cmd spid" -m -q $pid
+  done
+}
+
 function ap() {
   echo $@ | xargs -n1 asciinema play
 }

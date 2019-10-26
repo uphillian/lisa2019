@@ -294,8 +294,71 @@ was developed.  Instead of consulting the `/etc/hosts` file, a DNS server was
 consulted.  To allow the system to continue using the `/etc/hosts` file and the
 DNS servers side-by-side, the name service switch (nss) system was developed.
 When the system needs to lookup a host it consults `/etc/nsswitch.conf` to
-determine which  
+determine where to begin the lookup.  For example:
 
+```
+hosts:      files mdns4_minimal [NOTFOUND=return] dns myhostname
+``` 
+
+This line instructs the lookup operation to consult `/etc/hosts` first.  If the
+host is not found in that file, then multicast dns (AKA zeroconf) is consulted.
+The next entry is:
+
+```
+[NOTFOUND=return] dns
+```
+
+This means that if the host is not found in dns, then the lookup should stop at
+this point.  DNS resolution is handled by another nss library, libnss\_dns.
+This library will consult `/etc/resolv.conf` to determine which dns servers to
+search.
+
+When troubleshooting it is important to realise that all of this is happening
+when you attempt to connect to a server.  The mistake is to perform a dns lookup
+without using the same lookup procedure the system will use.
+
+**Try it:**
+
+```bash
+[vagrant@localhost ~]$ nslookup lisa2019
+Server:		10.0.2.3
+Address:	10.0.2.3#53
+
+** server can't find lisa2019: NXDOMAIN
+
+[vagrant@localhost ~]$ host lisa2019
+Host lisa2019 not found: 3(NXDOMAIN)
+[vagrant@localhost ~]$ getent hosts lisa2019
+1.2.3.4         lisa2019
+[vagrant@localhost ~]$ ping -c 1 -W1 lisa2019
+PING lisa2019 (1.2.3.4) 56(84) bytes of data.
+
+--- lisa2019 ping statistics ---
+1 packets transmitted, 0 received, 100% packet loss, time 0ms
+```
+
+### `getent`
+
+The `getent` utility is a great replacement for nslookup, dig and other dns
+tools.  Getent will perform the search using the same library call that the
+system uses.  Ping also uses this call, so if `getent` is not available, `ping`
+can be used instead.
+
+The nss modules are used to search for more than hosts.  Users, Groups and
+services are also searched via nss.  You can use getent to search for these and
+ensure that your search is the same search as the system will do.   When a
+system is configured to search LDAP or Active Directory for users, a mistake is
+to search those locations instead of using `getent`.
+
+**Try it:**
+
+```bash
+$ id lisa2019
+uid=1040(foo) gid=1001(foo) groups=1001(foo)
+$ grep lisa2019 /etc/passwd
+$ getent passwd lisa2019
+lisa2019:x:1040:1001:LISA 2019:/home/lisa2019:/bin/bash
+```
 
 ## Pluggable Authentication Modules (PAM)
 
@@ -312,11 +375,61 @@ The PAM system allows a set of dynamic libraries to be consulted when a user
 attempts to login to the system.  Several backends can be used to determine
 the password for a user.   
 
-### Limits
+When troubleshooting, look at `/etc/pam.d/system-auth` and start looking at all
+the pam subsystems mentioned in this file. 
+
+## Limits
 
 When a process runs on Linux it runs as a specific user and group.  A system of
 limits is imposed on the process by pam-limits (`man pam_limits`).  Limits are defined in
 `/etc/security/limits.conf`
+
+**Try it:**
+
+```
+$ ulimit -a
+core file size          (blocks, -c) 0
+data seg size           (kbytes, -d) unlimited
+scheduling priority             (-e) 0
+file size               (blocks, -f) unlimited
+pending signals                 (-i) 1890
+max locked memory       (kbytes, -l) 64
+max memory size         (kbytes, -m) unlimited
+open files                      (-n) 1024
+pipe size            (512 bytes, -p) 8
+POSIX message queues     (bytes, -q) 819200
+real-time priority              (-r) 0
+stack size              (kbytes, -s) 8192
+cpu time               (seconds, -t) unlimited
+max user processes              (-u) 1890
+virtual memory          (kbytes, -v) unlimited
+file locks                      (-x) unlimited
+$ sudo -iu foo
+$ ulimit -a
+core file size          (blocks, -c) 0
+data seg size           (kbytes, -d) unlimited
+scheduling priority             (-e) 0
+file size               (blocks, -f) unlimited
+pending signals                 (-i) 1890
+max locked memory       (kbytes, -l) 64
+max memory size         (kbytes, -m) unlimited
+open files                      (-n) 20
+pipe size            (512 bytes, -p) 8
+POSIX message queues     (bytes, -q) 819200
+real-time priority              (-r) 0
+stack size              (kbytes, -s) 8192
+cpu time               (seconds, -t) unlimited
+max user processes              (-u) 40
+virtual memory          (kbytes, -v) unlimited
+file locks                      (-x) unlimited
+$ cd /vagrant/troubleshootinglinux/
+$ ./foo-nofile.py 
+Traceback (most recent call last):
+  File "./foo-nofile.py", line 10, in <module>
+IOError: [Errno 24] Too many open files: '/tmp/foo-17.txt'
+$ ./foo-nproc.py 
+Error: unable to start thread
+```
 
 # Questions / Comments
 

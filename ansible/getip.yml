@@ -5,6 +5,7 @@
   - name: gcc and debuginfo rpms
     yum:
       name:
+        - bind-utils
         - gcc
         - gdb
         - epel-release
@@ -34,6 +35,11 @@
       dest: /etc/hosts
       line: "1.1.1.1     getip_hostname"
       state: present
+  - name: hosts entry for google.com
+    lineinfile:
+      dest: /etc/hosts
+      line: "1.2.3.4     lisa2019"
+      state: present
   - name: foo group
     group:
       name: foo
@@ -44,3 +50,21 @@
       comment: Foo Bar
       uid: 1040
       group: foo
+  - name: lisa2019 user (nss demo)
+    copy:
+      src: ./lisa2019.user
+      dest: /etc/passwd.db 
+  - name: update makedb Makefile (nss demo)
+    lineinfile:
+      dest: /var/db/Makefile
+      regexp: '^$(VAR_DB)/passwd.db'
+      line: '$(VAR_DB)/passwd.db: /etc/passwd.db'
+      state: present
+  - name: run makedb to update nss_db (nss demo)
+    shell: cd /var/db; make
+  - name: update nsswitch.conf for nss_db (nss demo)
+    lineinfile:
+      dest: /etc/nsswitch.conf
+      regexp: '^passwd:'
+      line: 'passwd:     db files sss'
+      state: present

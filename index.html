@@ -198,8 +198,8 @@
               man intro
             </aside>
             <h1>Documentation</h1>
-            <span class="fragment fade-in"><img src="./morpheus.jpg"></span>
-            <span class="fragment fade-in"><h2>man syscalls</h2></span>
+            <img class="fragment fade-in" src="./morpheus.jpg">
+            <h2 class="fragment fade-in">man syscalls <span class="fragment">&rArr;</span></h2>
           </section>
 
           <section>
@@ -213,6 +213,12 @@
               <span class="fragment fade-in"><h2>libc.so</h2></span>
             </span>
           </section>
+
+          <section>
+            <h1>ltrace</h1>
+            <h2 class="fragment">...finally</h2>
+          </section>
+
           <section>
             <aside class="notes">
               each line is a library call, each one of these has a man page that describes the input, output and return values.
@@ -392,7 +398,7 @@ checking for version `GLIBC_2.14' in file /lib64/libc.so.6 [0] required by file 
             <span id="terminal-iframe">
               <script>
                 if ( window.location == window.parent.location ) {
-                  document.getElementById('terminal-iframe').innerHTML = "<div><object type=text/html width=1024px height=600px class=ttyd data='http://localhost:8081'></object></div>";
+                  document.getElementById('terminal-iframe').innerHTML = "<div><object type=text/html width=1024px height=600px class=ttyd data='http://127.0.0.1:8081'></object></div>";
                 } else {
                   document.getElementById('terminal-iframe').innerHTML = "In Speaker View";
                 }
@@ -488,7 +494,8 @@ int gethostname (char *name, size_t len) {
 }</code></pre>
           </section>
 
-          <section>Solution<br>
+          <section>
+            <h1>Solution<br>&lArr;</h1>
             <aside class="notes">
               go back to terminal, show solution
               cd /vagrant
@@ -705,6 +712,27 @@ else:
           <section>
             zombie
             <pre class="stretch"><code class="python">
+#!/usr/bin/env python
+
+import os
+import sys
+import time
+import signal
+
+def sigalrm(signum, frame):
+  print("Received %d" % signum)
+
+signal.signal(signal.SIGALRM, sigalrm)
+pid = os.fork()
+if pid == 0:
+  print("Child exiting")
+  sys.exit(0)
+else:
+  print("Parent PID %s, Child PID: %s\nWaiting for Signal" % (os.getpid(),pid) )
+  signal.pause()
+  os.wait()
+  print("Zombie is gone\n") 
+  sys.exit(0)
 </code></pre>
           </section>
 
@@ -715,9 +743,7 @@ else:
               you can't kill a zombie, they are already dead.
               check the status, it Z
             </aside>
-            fork<br>
-            doublefork<br>
-            zombie<br>
+            <h1>&rArr;</h1>
           </section>
         </section>
         <section>
@@ -734,7 +760,7 @@ else:
             <span id="processes-iframe">
               <script>
                 if ( window.location == window.parent.location ) {
-                  document.getElementById('processes-iframe').innerHTML = "<div><object type=text/html width=1024px height=600px class=ttyd data='http://localhost:8081'></object></div>";
+                  document.getElementById('processes-iframe').innerHTML = "<div><object type=text/html width=1024px height=600px class=ttyd data='http://127.0.0.1:8081'></object></div>";
                 } else {
                   document.getElementById('processes-iframe').innerHTML = "In Speaker View";
                 }
@@ -770,9 +796,70 @@ else:
             </aside>
             <h1>Another story</h1><img height="50%" src="./spoon.jpg" border="0">
           </section>
+
           <section>
             <aside class="notes">
               This seems pretty difficult, but actually it's a fairly straightforward fix.
+              One more thing you need to know about before we start
+              inodes 
+              inodes are files in Linux
+              filenames and files are not the same thing
+              a filename is a reference to a file
+              when you create a file the link count is 1
+              When you remove a file, you actually execute unlink
+              next slide
+            </aside>
+            <h1 class="fragment">inodes</h1>
+            <pre class="fragment"><code>
+            $ stat /lib64/libc.so.6
+   File: /lib64/libc.so.6 -> libc-2.29.so
+   Size: 12 Blocks: 0 IO Block: 4096 symbolic link
+ Device: fd01h/64769d	Inode: 2268443   Links: 1
+ Access: (0777/lrwxrwxrwx) Uid:(0/root) Gid:(0/root)
+Context: system_u:object_r:lib_t:s0
+ Access: 2019-10-24 20:01:01.282015177 -0700
+ Modify: 2019-09-04 12:33:47.000000000 -0700
+ Change: 2019-09-08 19:57:02.255027798 -0700
+  Birth: 2019-09-08 19:57:02.254027799 -0700
+            </code></pre>
+          </section>
+
+          <section>
+            <aside class="notes">
+              unlink just reduces the link count by one
+              if there's an open filehandle, the file isn't deleted
+              we can get the data.
+              on the other hand, it can also continue to use space but not be reported in things like du.
+            </aside>
+            <h1>Unlink</h1>
+            <pre class="fragment"><code class="nohighlight">
+# man 2 unlink
+DESCRIPTION
+  unlink() deletes a name from the filesystem.  
+  If that name was the last link to a file and
+  no processes have the file open, the file is
+  deleted and the space it was using is made
+  available for reuse.
+
+  If the name was the last link to a file but
+  any processes still have the file open, the
+  file will remain in existence until the last
+  file descriptor referring to it is closed.
+            </code></pre>
+          </section>
+          
+          <section>
+            <aside class="notes">
+              we just want to tell a running process to change filehandles.
+              There's a tool to do that.
+            </aside>
+            <h1 class="fragment">gdb</h1>
+            <img class="fragment" src="./archer.png" >
+          </section>
+
+          <section>
+            <aside class="notes">
+              lets look at what we need to do.
             </aside>
             <pre><code class="nohighlight">
 # man open
@@ -809,20 +896,54 @@ dup2()
   ously open, it is silently closed before being reused.
             </code></pre>
           </section>
+          <section>
+            <aside class="notes">
+              solution
+              ap gdb.cast
+            </aside>
+            <h1>&lArr;</h1>
+          </section>
         </section>
 
         <!-- troubleshooting basics -->
         <section>
           <section>
             <h1>Troubleshooting</h1>
+            <h2 class="fragment">...finally</h2>
           </section>
 
           <section>
-            the list:
-            change one thing at a time.
-            check permissions
+            <h1>Have a Plan</h1>
+            <h2><ul>
+                <li><b>What</b> is broken?
+                  <h2>
+                    <ul>
+                      <li>Did it ever work?</li>
+                      <li>How do I know when it's fixed?</li>
+                    </ul>
+                  </h2>
+                </li>
+                <li>What are the requirements?
+                  <h2>
+                    <ul>
+                      <li>How can I test the requirements?</li>
+                    </ul>
+                  </h2>
+                </li>
+                <li><b>When did it last work?</b></li>
+              </ul>
+            </h2>
+          </section>
+
+          <section>
+            <h1>Methods</h1>
+            <h2>
+              <ul>
+                <li>Make a backup <i>if possible</i></li>
+                <li>
           </section>
         </section>
+
 
         <section>
           <h1>Questions?</h1>

@@ -26,6 +26,28 @@ You may install these by executing the following commands:
 $ vagrant plugin install vagrant-hostmanager
 ```
 
+To provision the main VM used in the examples, execute the following:
+```bash
+$ vagrant up getip
+```
+
+### Checkout troubleshooting repository
+
+The [troubleshooting](origin
+https://github.com/uphillian/troubleshootinglinux.git) repository is a separate
+repository.  To pull in this repository, first glone this repository, then use
+`git submodule` to pull in the troubleshooting repository.
+
+```bash
+$ git clone https://github.com/uphillian/lisa2019.git
+$ cd lisa2019
+```
+
+### Virtual Machine
+
+After provisioning has completed, ssh into the test machine and
+change to the troubleshooting directory.
+
 ## Overview / Kernel
 
 The kernel is the first process started by the boot loader.  Computer Scientists
@@ -54,13 +76,41 @@ the kernel are known as System calls or syscalls.
 There were originally 34 syscalls.  These are things such as open, close, write.
 * Try it
 
-```
-man syscalls
+```bash
+$ man syscalls
 ```
 
 ### Processes
 
+#### Fork
+
 Processes are created via the fork system call.  
+```bash
+$ man fork
+```
+
+A lot of the terminology used in UNIX has a familial root.
+When a process is created via fork, the new process (the child) receives a full
+copy of the memory of the creating process (the parent).  When the parent
+process is terminated (dies), the child is referred to as an orphan.  Orphaned
+processes are "reaped" by the init process, the parent of the reaped processes
+becomes the init process.   
+
+```bash
+$ ./fork.py &
+$ psg python
+```
+
+#### Signals
+
+Processes communicate with one another using signals.  Signals are passed
+between processes using the `kill` command.  The kill command by default sends
+the SIGTERM (15) or terminate signal.  Many other signals exist, a commonly used
+signal is SIGKILL (9). 
+A list of available signals is obtained via 
+#### Zombie
+
+When a child dies it is expected to send the signal SIGCHILD (17)
 ## ltrace
 
 Run ltrace 

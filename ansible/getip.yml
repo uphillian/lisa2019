@@ -11,9 +11,11 @@
         - epel-release
         - lsof
         - ltrace
+        - mtr
         - python3-pip
         - strace
         - tmux
+        - traceroute
       state: present
 
   - name: asciinema playback

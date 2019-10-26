@@ -282,6 +282,66 @@ Zombie is gone
 [1]+  Done                    ./zombie.py
 ```
 
+#### threads
+
+In programming, threads are seen as multiple executions of the same program in
+a shared memory space.  The Linux kernel does not implement threads any
+different than regular processes.  This is important when troubleshooting.
+Threads are seen as standard processes, they use the same resources as any other
+process.  If a user has a limit on processes or open files, each thread will
+count as a process and as an open file.
+
+To show how threads work, a sample python program has been written, when run
+under the foo user on your vagrant host, it will operate correctly until the foo
+users process limit is reached.
+
+**Try it:**
+
+```bash
+[foo@localhost troubleshootinglinux]$ ./thread.py  |grep Number
+Number of Threads 10
+Number of Threads 10
+Number of Threads 10
+Number of Threads 10
+Number of Threads 10
+Number of Threads 0
+Number of Threads 0
+```
+
+In this example, when the process attempts to start threads after reaching the
+limit, it fails.  But, since the process creating the thread is not the current
+process, we fail to see any error messages.  It is important to examine the
+limits of a user when troubleshooting problems.  You may also examine the limits
+of a running process using the `/proc` filesystem.
+
+**Try it:**
+
+```bash
+$ nohup ./thread.py &
+[1] 9895
+nohup: ignoring input and appending output to ‘/home/foo/nohup.out’
+$ cat /proc/9895/limits 
+Limit                     Soft Limit           Hard Limit           Units     
+Max cpu time              unlimited            unlimited            seconds   
+Max file size             unlimited            unlimited            bytes     
+Max data size             unlimited            unlimited            bytes     
+Max stack size            8388608              unlimited            bytes     
+Max core file size        0                    unlimited            bytes     
+Max resident set          unlimited            unlimited            bytes     
+Max processes             40                   40                   processes 
+Max open files            20                   20                   files     
+Max locked memory         65536                65536                bytes     
+Max address space         unlimited            unlimited            bytes     
+Max file locks            unlimited            unlimited            locks     
+Max pending signals       1890                 1890                 signals   
+Max msgqueue size         819200               819200               bytes     
+Max nice priority         0                    0                    
+Max realtime priority     0                    0                    
+Max realtime timeout      unlimited            unlimited            us  
+```
+
+
+
 ## Name Service Switch
 
 UNIX was created at a time when there were fewer computers and even fewer

@@ -1,5 +1,28 @@
 # LISA 2019 Linux System Troubleshooting Tutorial
 
+## Overview / Kernel
+
+The kernel is the first process started by the boot loader.  Computer Scientists start numbering at 0, so the kernel is process 0.  The first process the kernel starts is the init process.  This is process 1.  Init is in charge of starting all the other processes on the system.  Various init programs exist, system V init, upstart, launchd and systemd are a few.  Processes are monitored in a process table.  The kernel exposes the process table in the /proc filesystem.  The kernel has various internal processes that are also shown in the process table.
+
+## UNIX / Linux
+
+Linux is a clone of UNIX.  UNIX was created at a time when resources were very tight.  This isn't a bad thing.  There were various design decisions made to conserve space.  Early on in the development, several low level operations were identified.  These operations would be needed by many different programs.  To reduce the redundancy in the system, early UNIX designed a system of shared libraries that should be used to perform the common operations.  The kernel would handle some of these operations, those operations that required special access to hardware such as opening and writing to files.  The calls performed by the kernel are known as System calls or syscalls.
+
+### syscalls
+
+There were originally 34 syscalls.  These are things such as open, close, write.
+* Try it
+
+```
+man syscalls
+```
+
+### Processes
+
+Processes are created via the fork system call.  
+## ltrace
+
+Run ltrace 
 ## The Linker ld.so
 
 ### LD\_PROFILE

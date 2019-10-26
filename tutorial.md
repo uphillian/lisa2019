@@ -311,34 +311,8 @@ Number of Threads 0
 In this example, when the process attempts to start threads after reaching the
 limit, it fails.  But, since the process creating the thread is not the current
 process, we fail to see any error messages.  It is important to examine the
-limits of a user when troubleshooting problems.  You may also examine the limits
-of a running process using the `/proc` filesystem.
+limits of a user when troubleshooting problems.
 
-**Try it:**
-
-```bash
-$ nohup ./thread.py &
-[1] 9895
-nohup: ignoring input and appending output to ‘/home/foo/nohup.out’
-$ cat /proc/9895/limits 
-Limit                     Soft Limit           Hard Limit           Units     
-Max cpu time              unlimited            unlimited            seconds   
-Max file size             unlimited            unlimited            bytes     
-Max data size             unlimited            unlimited            bytes     
-Max stack size            8388608              unlimited            bytes     
-Max core file size        0                    unlimited            bytes     
-Max resident set          unlimited            unlimited            bytes     
-Max processes             40                   40                   processes 
-Max open files            20                   20                   files     
-Max locked memory         65536                65536                bytes     
-Max address space         unlimited            unlimited            bytes     
-Max file locks            unlimited            unlimited            locks     
-Max pending signals       1890                 1890                 signals   
-Max msgqueue size         819200               819200               bytes     
-Max nice priority         0                    0                    
-Max realtime priority     0                    0                    
-Max realtime timeout      unlimited            unlimited            us  
-```
 
 
 
@@ -491,10 +465,63 @@ $ ./foo-nproc.py
 Error: unable to start thread
 ```
 
+You may also examine the limits of a running process using the `/proc`
+filesystem.
+
+**Try it:**
+
+```bash
+$ nohup ./thread.py &
+[1] 9895
+nohup: ignoring input and appending output to ‘/home/foo/nohup.out’
+$ cat /proc/9895/limits 
+Limit                     Soft Limit           Hard Limit           Units     
+Max cpu time              unlimited            unlimited            seconds   
+Max file size             unlimited            unlimited            bytes     
+Max data size             unlimited            unlimited            bytes     
+Max stack size            8388608              unlimited            bytes     
+Max core file size        0                    unlimited            bytes     
+Max resident set          unlimited            unlimited            bytes     
+Max processes             40                   40                   processes 
+Max open files            20                   20                   files     
+Max locked memory         65536                65536                bytes     
+Max address space         unlimited            unlimited            bytes     
+Max file locks            unlimited            unlimited            locks     
+Max pending signals       1890                 1890                 signals   
+Max msgqueue size         819200               819200               bytes     
+Max nice priority         0                    0                    
+Max realtime priority     0                    0                    
+Max realtime timeout      unlimited            unlimited            us  
+```
+
+# Tools
+
+A short list of tools that are essential in troubleshooting, this is not an
+exhaustive list.  It is important to note that these are all standard tools that
+are available in all major Linux distributions.  When operating behind a
+corporate firewall, using *off-the-shelf* commands is essential.
+
+Command | Use
+--------|----
+awk     | text manipulation
+getent  | search nss for a given database
+grep    | search output for string
+ltrace  | library trace, show library calls
+man     | manual pages, **always** read the man pages
+mtr\*   | my trace route
+nc      | netcat, network connectivity
+nsswitch.conf | name service switch configuration file
+ping    | determine if a host is reachable via ICMP
+/proc   | exposes kernel process tree as a filesystem
+sed     | text manipulation
+strace  | syscall trace, show system calls
+/sys    | exposes kernel internals as a filesystem
+tracepath | show the network path taken to reach a host
+
 # Questions / Comments
 
 Feel free to fork the repository and submit a pull request for any errors or
-ommisions.  Questions can be sent directly to:
+omissions.  Questions can be sent directly to:
 
 `thomas @ narrabilis dot com`
 

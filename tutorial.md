@@ -185,6 +185,30 @@ function.  This is possible with the `LD_PRELOAD` environment variable.  When
 this environment variable is available, it specifies a list of additional ELF
 shared libraries to be loaded before all others. 
 
+When troubleshooting, remember that if a library call is not returning the
+results you need, you can always intercept the call using `LD_PRELOAD`.  It is
+possible to intercept the call in only certain situations and call the original
+library function otherwise.  This is called wrapping, the following flags to
+`gcc` will allow a function to wrap another function.
+
+```bash
+# gcc <yoursource>.c -fPIC -shared -Wl,-wrap,<library_call> -o <yourwraplib>.so
+```
+
+In the example in the presentation, we didn't call the original gethostname
+function, therefore only `-fPIC` and `-shared` are required.
+
+**Try it:**
+
+```bash
+$ gcc gethostname_wrap.c -fPIC -shared -Wl,-wrap,gethostname -o gethostname_wrap.so
+$ gcc -o getip getip.c
+$ LD_PRELOAD=./gethostname_wrap.so ./getip
+Using IP: 1.1.1.1
+$ LD_PRELOAD=./gethostname_wrap.so hostname
+getip_hostname
+```
+
 ##### LD\_PROFILE
 
 You can profile any shared library by setting LD\_PROFILE to the name of the
@@ -494,6 +518,76 @@ Max realtime priority     0                    0
 Max realtime timeout      unlimited            unlimited            us  
 ```
 
+# Network Troubleshooting
+
+## nss and `gethostbyname`
+
+When troubleshooting, remember to use getent to lookup hostnames.  This ensures
+that all the nss databases are searched.  The function you need to be testing is
+`gethostbyname`, using standard utilities such as ssh and even tar.  For
+example, to see tar use `gethostbyname` try the following.
+
+**Try it:**
+
+```bash
+$ ltrace tar xf nosuchhost:foo.tar  2>&1|grep gethostbyname
+gethostbyname("nosuchhost" <unfinished ...>
+```
+
+## `nc` and `LISTEN`
+
+When troubleshooting a connection between two hosts, it is often useful to use
+`nc` to establish a connection.  You can also use `nc` to create a listening
+process.  We often use `nc` to establish that connectivity is working without
+involving a complex application.
+
+**Try it:**
+
+```bash
+$ nc -l 8080
+$ nc otherhost 8080
+something
+^D
+```
+
+## gnutls-cli
+
+When you need to troubleshoot a connection between hosts that is encrypted.
+You can connect to a service that is TLS protected, issue the `starttls` command
+and proceed to debug your communication.
+
+**Try it:**
+
+```bash
+```
+
+## `man`
+
+The UNIX Manual is huge.  There is a lot of documentation on the system.  You
+need to read anything you can find.  When using `man`, remember the different
+sections that are available and the headings within entries.
+
+### SEE ALSO
+
+Always look here for clues to other pages that may help you solve your problem.
+
+### EXAMPLES
+
+If a page has an example, it can help give you the proper syntax for a specific
+scenario.
+
+### `/usr/share/doc`
+
+Some packages will install files in `/usr/share/doc`, sometimes this will
+include example configuration files.  Often this includes the README of the
+project.
+
+### `info`
+
+The `info` system is a competing documentation system and is particular useful
+when working with GNU software.  The `info` page for libc is very good and has
+several helpful subpages.  
+
 # Tools
 
 A short list of tools that are essential in troubleshooting, this is not an
@@ -504,19 +598,30 @@ corporate firewall, using *off-the-shelf* commands is essential.
 Command | Use
 --------|----
 awk     | text manipulation
+gdb     | GNU Debugger
 getent  | search nss for a given database
+gnutls-cli | inspect tls communication between hosts
 grep    | search output for string
+htop    | similar to top but with thread output
 ltrace  | library trace, show library calls
 man     | manual pages, **always** read the man pages
-mtr\*   | my trace route
+mtr\*   | my trace route, similar to traceroute but with ICMP
 nc      | netcat, network connectivity
 nsswitch.conf | name service switch configuration file
+openssl | SSL/TLS command line utility
 ping    | determine if a host is reachable via ICMP
 /proc   | exposes kernel process tree as a filesystem
 sed     | text manipulation
 strace  | syscall trace, show system calls
 /sys    | exposes kernel internals as a filesystem
-tracepath | show the network path taken to reach a host
+tcpdump | expose network traffic received on an interface
+top     | show running processes sorted by arbitrary field
+tracepath | show the network path taken to reach a host, discovers MTU
+traceroute | show the network path taken to reach a host, uses TTL
+wireshark | network packet inspection
+
+\*mtr may not be in your distributions stock repositories, but is available for
+all major Linux distributions
 
 # Questions / Comments
 

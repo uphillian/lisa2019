@@ -13,6 +13,7 @@
         - lsof
         - ltrace
         - mtr
+        - nc
         - python3-pip
         - strace
         - tmux

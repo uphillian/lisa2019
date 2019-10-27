@@ -8,6 +8,7 @@
 Vagrant.configure("2") do |config|
   config.vm.define "web" do |web|
     web.vm.box = "centos/7"
+    web.vm.hostname = "web.example.com"
     web.vm.provision "ansible_local" do |ansible|
       ansible.playbook = "docker-apache.yml"
       ansible.become = true
@@ -15,12 +16,9 @@ Vagrant.configure("2") do |config|
     web.vm.network "private_network", ip: "192.168.0.2"
   end
 
-  config.vm.define "browser" do |browser|
-    browser.vm.box = "centos/7"
-    browser.vm.network "private_network", ip: "192.168.0.20"
-  end
   config.vm.define "getip" do |getip|
     getip.vm.box = "centos/7"
+    getip.vm.hostname = "getip.example.com"
     getip.vm.network "private_network", ip: "192.168.0.200"
     getip.vm.provision "ansible" do |ansible|
       ansible.become = true

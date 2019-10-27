@@ -598,6 +598,7 @@ $ ps -eo "ppid pid stat cmd" |sort -n |less
 $ psx
 $ psk
             </code></pre>
+            <h1 class="fragment">&rArr;</h1>
           </section>
 
           <section>
@@ -614,7 +615,7 @@ $ psk
                 <td class="fragment">/sys</td>
               </tr>
             </table>
-            <h1 class="fragment">&lArr;</h1>
+            <h1 class="fragment">&rArr;</h1>
           </section>
 
 
@@ -642,6 +643,7 @@ $ psk
                 <td class="fragment" data-fragment-index=15 align=center>2</td>
               </tr>
             </table>
+            <h1 class="fragment">&rArr;</h1>
           </section>
 
           <section>
@@ -904,6 +906,7 @@ dup2()
               ap gdb.cast
             </aside>
             <h1>&lArr;</h1>
+            <img class="fragment" src="./payday.jpg">
           </section>
         </section>
 
@@ -916,36 +919,115 @@ dup2()
 
           <section>
             <h1>Have a Plan</h1>
-            <h2><ul>
-                <li><b>What</b> is broken?
-                  <h2>
-                    <ul>
-                      <li>Did it ever work?</li>
-                      <li>How do I know when it's fixed?</li>
-                    </ul>
-                  </h2>
-                </li>
-                <li>What are the requirements?
-                  <h2>
-                    <ul>
-                      <li>How can I test the requirements?</li>
-                    </ul>
-                  </h2>
-                </li>
-                <li><b>When did it last work?</b></li>
-              </ul>
-            </h2>
+            <ul>
+              <li><b>What</b> is broken?
+                <ul>
+                  <li>Did it ever work?</li>
+                  <li>How do I know when it's fixed?</li>
+                </ul>
+              </li>
+              <li>What are the requirements?
+                <ul>
+                  <li>How can I test the requirements?</li>
+                </ul>
+              </li>
+              <li><b>When did it last work?</b></li>
+            </ul>
           </section>
 
           <section>
             <h1>Methods</h1>
-            <h2>
-              <ul>
-                <li>Make a backup <i>if possible</i></li>
-                <li>
+            <ul>
+              <li><h2>Make a backup</h2></li>
+              <li><h2>Read Logs</h2></li>
+              <li><h2>Read Documentation</h2></li>
+              <li><h2>One thing only</h2></li>
+            </ul>
+          </section>
+
+          <section>
+            <table>
+              <tr>
+                <td class="fragment" data-fragment-index=1>change <b>one</b> thing</td>
+                <td class="fragment" data-fragment-index=2>verify status</td>
+                <td class="fragment" data-fragment-index=3>if unfixed,
+                  <b>undo</b> change</td>
+              </tr>
+              <tr class="fragment" data-fragment-index=10>
+                <td colspan=3 align=center>repeat</td>
+              </tr>
+            </table>
+          </section>
+
+          <section>
+            <h1>Trace</h1>
+            <ul>
+              <li>ltrace</li>
+              <li>man &lt;call&gt;</li>
+              <li>SEE ALSO</li>
+              <li class="fragment">...keep reading</li>
+            </ul>
           </section>
         </section>
 
+        <section>
+          <section>
+            <h1>Networking</h1>
+            <img class="fragment" src="./firewall.jpg">
+          </section>
+
+          <section>
+            <aside class="notes">
+              when unix started, there were less than 100 computers on the
+              network.  it was completely reasonable to store their names in a
+              file, /etc/hosts
+              when that became too large another system was created, DNS.
+              but the important thing when troubleshooting is that UNIX uses
+              nsswitch.conf to determine where to look.
+
+            </aside>
+            <h1>nss</h1>
+            <h2>name service switch</h2>
+            <h3 class="fragment"><pre>/etc/hosts</pre></h3>
+            <h3 class="fragment"><pre>/etc/nsswitch.conf</pre></h3>
+          </section>
+
+          <section>
+            <aside class="notes">
+              the nsswitch.conf file has entries for sources to search for
+              information.  hosts, users, groups, netgroups, services, all these
+              things are searched for using nsswitch.conf
+              on modern systems, it will look in mdns (multicast, think bonjour) as well.
+              this is why it's important to use the library calls not a tool
+              which only searches one source
+            </aside>
+            <pre><code class=fragment>
+hosts:  files mdns4_minimal [NOTFOUND=return] dns myhostname</code></pre>
+            <pre><code class=fragment>
+passwd: db sss files systemd</code></pre>
+          </section>
+
+          <section>
+            <aside class="notes">
+              go back 2, to terminal
+              ap user.cast
+            </aside>
+            <h2>&lArr; &lArr;</h2>
+          </section>
+
+          <section>
+
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h1>Encryption / Certificates</h1>
+          </section>
+
+          <section>
+          </section>
+        </section>
 
         <section>
           <h1>Questions?</h1>

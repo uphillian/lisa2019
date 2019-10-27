@@ -317,6 +317,7 @@ exit_group@SYS(0 &lt;no return ...&gt;
             <aside class="notes">
               What do we mean by linkable? Objects are linkable, you can link to other shared libraries.
               What's in charge of that? the linker.
+              Why do we care, well, we need to read the man page for the linker
             </aside>
             <h1>Linker</h1>
             <h2>ld.so</h2>
@@ -352,14 +353,16 @@ OFFSET           TYPE              VALUE
               LD_PRELOAD, how to preload stuff, so now we get into the meat...
               So now we know how to fix this, we can just intercept the call to gethostname
             </aside>
-            <h1>LD_PRELOAD</h1>
+            <h1>man ld.so</h1>
+            <h2>LD_PRELOAD</h2>
             <p align=left>A list of additional, user-specified, ELF shared libraries to be loaded before all others.</p>
           </section>
 
           <section>
             <aside class="notes">
             </aside>
-            <h1>LD_DEBUG</h1>
+            <h1>man ld.so</h1>
+            <h2>LD_DEBUG</h2>
             <pre><code class="bash">
 # LD_DEBUG=help /bin/true
 Valid options for the LD_DEBUG environment variable are:
@@ -373,7 +376,9 @@ checking for version `GLIBC_2.3' in file /lib64/libc.so.6 [0] required by file /
 checking for version `GLIBC_2.3.4' in file /lib64/libc.so.6 [0] required by file /bin/true [0]
 checking for version `GLIBC_2.14' in file /lib64/libc.so.6 [0] required by file /bin/true [0]
             </code></pre>
+            <h1 class="fragment">&rArr; &rArr;</h1>
           </section>
+
 
         </section>
         <!-- end of background section, into solution -->
@@ -495,11 +500,14 @@ int gethostname (char *name, size_t len) {
 
               So now the two programs are working side by side compeltely oblivious to the fix.
               We didn't need to recompile anything and we get our paycheck.
+              (down arrow)
               I hope this tale proves my point, that understanding how things work,
               makes solutions simple.
               So now a more about how things work
             </aside>
+            <img class="fragment" src="./payday.jpg">
           </section>
+
         </section>
 
         <!-- more background info (high level -->
@@ -587,6 +595,7 @@ int gethostname (char *name, size_t len) {
             <h1>parent/child</h1>
             <pre><code class="bash">
 $ ps -eo "ppid pid stat cmd" |sort -n |less
+$ psx
 $ psk
             </code></pre>
           </section>
@@ -605,6 +614,7 @@ $ psk
                 <td class="fragment">/sys</td>
               </tr>
             </table>
+            <h1 class="fragment">&lArr;</h1>
           </section>
 
 

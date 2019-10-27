@@ -1011,14 +1011,42 @@ passwd: db sss files systemd</code></pre>
             <aside class="notes">
               go back 2, to terminal
               ap user.cast
+              the same applies when looking up hosts
+              ap host.cast
             </aside>
             <h2>&lArr; &lArr;</h2>
           </section>
 
           <section>
-
+            <aside class="notes">
+              Why did I use ping, well, I knew ping used the same system call as
+              most other applications on the system.
+              Even tar will try gethostbyname
+              ping will use getaddrinfo, but both will open nss
+              if you just use nslookup or dig or host, you'll miss information
+              particularly when bonjour is active.
+            </aside>
+            <pre><code>
+# ltrace tar cf lisa2019:foo.tar /etc/hosts 2>&1 |grep gethost
+gethostbyname("lisa2019" <unfinished ...>
+            </code></pre>
+            <pre><code class="fragment">
+            # ltrace -S ping -w1 -c1 lisa2019 2>&1 |grep nss
+open@SYS("/etc/nsswitch.conf", 524288, 0666)     = 4
+read@SYS(4, "#\n# /etc/nsswitch.conf\n#\n# An ex"..., 4096) = 1749
+open@SYS("/lib64/libnss_files.so.2", 524288, 020165240000) = 4
+            </code></pre>
           </section>
+
+          <section>
+            <aside class="notes">
+            </aside>
+            <h1>nc</h1>
+            <img class="fragment" src="./swissarmyknife.jpg">
+          </section>
+
         </section>
+        <!-- end of network section -->
 
         <section>
           <section>

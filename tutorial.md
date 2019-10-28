@@ -55,6 +55,23 @@ change to the troubleshooting directory.
 $ vagrant ssh getip
 $ cd /vagrant/troubleshootinglinux
 ```
+### asciinema
+
+The demos are pre-recorded with asciinema for illustrative purposes.  The
+Vagrant provisioning will install asciinema to allow playback within the VMs.
+If you wish to watch the demo casts on your own laptop, you will need to install
+the asciinema pip (Python Package).
+
+```bash
+$ pip3 install asciinema
+```
+
+The convenience aliases have been configured in the vagrant machines
+
+* ap asciinema play
+* ar asciinema record
+
+You may pause playback while watching a cast, by typing a space.
 
 ## Overview / Kernel
 

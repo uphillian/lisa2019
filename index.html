@@ -1200,6 +1200,33 @@ open@SYS("/lib64/libnss_files.so.2", 524288, 020165240000) = 4
         <section>
           <section>
             <h1>Encryption / Certificates</h1>
+            <h2>x509</h2>
+            <h3>large primes</h3>
+          </section>
+
+          <section>
+            <table>
+              <tr>
+                <td><img src="./x509.png"></td>
+              </tr>
+            </table>
+          </section>
+
+          <section>
+            <h1>CA / verify</h1>
+            <pre><code>
+$ openssl verify -CAfile ca.pem getip.example.com.pem 
+getip.example.com.pem: OK
+</code></pre>
+<pre><code class="fragment">
+$ cat ca.pem crl-revoked.pem >ca_crl.pem
+$ openssl verify -CAfile ca_crl.pem -crl_check getip.example.com.pem
+getip.example.com.pem: CN = getip.example.com
+error 11 at 0 depth lookup:CRL is not yet valid
+CN = getip.example.com
+error 23 at 0 depth lookup:certificate revoked
+
+</code></pre>
           </section>
 
           <section>
@@ -1208,8 +1235,25 @@ open@SYS("/lib64/libnss_files.so.2", 524288, 020165240000) = 4
                    prime
                    that stuff.
             </aside>
+<pre><code>
+$ openssl x509 -in getip.example.com.pem -noout -modulus
+Modulus=ACCBE50557F389F778505BD8C147FAD75A91DDA346D6CB4D006496FC31633A6FF6138444FF5371269A39
+...
+$ openssl x509 -in getip.example.com.pem -noout -modulus |sha256sum
+2688b20c253241e1e291f4cab938d6a1b43a68ac158da47ebba60cfa48e641fe  -</code></pre>
+<pre><code class="fragment">
+$  openssl rsa -in private_keys/getip.example.com.pem  -noout -modulus |sha256sum 
+2688b20c253241e1e291f4cab938d6a1b43a68ac158da47ebba60cfa48e641fe  -
+</code></pre>
+          </section>
+
+          <section>
+            <aside class="notes">
+              Allows you to intercept ssl communication
+            </aside>
             <pre><code>
-$ gnutls-cli
+$ gnutls-cli -p <port> <host>
+$ openssl s_client <host>:<port>
 </code></pre>
           </section>
 

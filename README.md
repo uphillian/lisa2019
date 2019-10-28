@@ -1,7 +1,15 @@
 # LISA2019: Linux Systems Troubleshooting
 
+## [Slides](https://github.com/uphillian/lisa2019/blob/master/lisa2019.pdf)
+
+To view the slides, clone the github repository and then point your browser at
+the index.html file within the repo. (file://$HOME/lisa2019/index.html)
+
+The slides use [revealjs](https://revealjs.com/)
+
 ## [Presentation](https://www.usenix.org/conference/lisa19/presentation/uphill)
 Monday, October 28, 2019 - 2:00 pm–3:30 pm
+
 
 ### Abstract: 
 In this fast-paced tutorial we will start with an overview of how Linux works.

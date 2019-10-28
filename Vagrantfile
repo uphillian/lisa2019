@@ -10,7 +10,7 @@ Vagrant.configure("2") do |config|
     web.vm.box = "centos/7"
     web.vm.hostname = "web.example.com"
     web.vm.provision "ansible_local" do |ansible|
-      ansible.playbook = "docker-apache.yml"
+      ansible.playbook = "ansible/docker-apache.yml"
       ansible.become = true
     end
     web.vm.network "private_network", ip: "192.168.0.2"

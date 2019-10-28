@@ -9,7 +9,6 @@
         - gcc
         - gdb
         - gnutls-utils
-        - htop
         - epel-release
         - lsof
         - ltrace
@@ -20,6 +19,13 @@
         - tmux
         - traceroute
       state: present
+
+  - name: Install htop
+    yum:
+      name:
+        - htop
+      state: present
+      update_cache: true
 
   - name: asciinema playback
     shell: pip3 install asciinema

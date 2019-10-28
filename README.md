@@ -2,6 +2,9 @@
 
 ## [Slides](https://github.com/uphillian/lisa2019/blob/master/lisa2019.pdf)
 
+Slides are also exported to
+[slideshare](https://www.slideshare.net/ThomasHowardUphill/linux-system-troubleshooting)
+
 To view the slides, clone the github repository and then point your browser at
 the index.html file within the repo. (file://$HOME/lisa2019/index.html)
 

@@ -7,4 +7,4 @@ tmux neww -n vagrant
 tmux neww -n ttyd
 
 # start ttyd
-./ttyd-start 
+#./ttyd-start 

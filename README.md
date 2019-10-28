@@ -25,6 +25,10 @@ The tutorial is available in
 
 Installation instructions are provided in the tutorial document.
 
+The files used in the demos are available in the demos directory.  The scripts
+are in the troubleshootinglinux github
+[repository](https://github.com/uphillian/troubleshootinglinux.git)
+
 # Contact
 
 `thomas @ narrabilis dot com`

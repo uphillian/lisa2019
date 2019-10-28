@@ -749,7 +749,81 @@ else:
             </aside>
             <h1>&rArr;</h1>
           </section>
+
+          <section>
+            <aside class="notes">
+              threads, linux kernel doesn't think threads are anything special.
+              it counts them as full processes.
+              the only slightly different accounting is in the /proc/[pid]/task
+              directory.
+              tasks count as open files and processes.
+              who cares.
+              you should. limits are a thing
+            </aside>
+            <h1>Threads</h1>
+            <pre class="stretch"><code>
+$ ./thread.py
+$ pst thread
+ PPID   PID STAT CMD                          SPID
+ 4671  6760 -    /usr/bin/python ./thread.py     -
+    -     - Tl   -                            6760
+    -     - Tl   -                            6761
+    -     - Tl   -                            6762
+    -     - Tl   -                            6763
+    -     - Tl   -                            6764
+    -     - Tl   -                            6765
+    -     - Tl   -                            6766
+    -     - Tl   -                            6767
+    -     - Tl   -                            6768
+    -     - Tl   -                            6769
+    -     - Tl   -                            6770
+$ ls /proc/6760/task
+6760  6761  6762  6763  6764  6765  6766  6767  6768  6769  6770
+            </code></pre>
+          </section>
+
+          <section>
+            <aside class="notes">
+              The system of limits allows you to control how many resources
+              users or processes consume.
+              Limits are available in the /proc filesystem.
+              In the tutorial I have you run some processes as a user with
+              restricted limits.
+              Limits are part of PAM.
+            </aside>
+            <h1>Limits</h1>
+<pre class="stretch"><code>
+[foo@getip ~]$ cat /proc/$$/limits
+Limit                     Soft Limit           Hard Limit           Units
+Max cpu time              unlimited            unlimited            seconds
+Max file size             unlimited            unlimited            bytes
+Max data size             unlimited            unlimited            bytes
+Max stack size            8388608              unlimited            bytes
+Max core file size        0                    unlimited            bytes
+Max resident set          unlimited            unlimited            bytes
+Max processes             40                   40                   processes
+Max open files            20                   20                   files
+...
+</code></pre>
+<h1>&rArr;</h1>
+          </section>
+
+
+          <section>
+            <aside class="notes">
+              We won't have time to talk too detailed about PAM.
+              But limits are important. You need to check them when diagnosing a
+              problem.
+            </aside>
+            <h1>PAM</h1>
+            <h2>Pluggable<br>
+              Authentication<br>
+              Modules</h2>
+            <h3><code class="fragment">man pam</code></h3>
+          </section>
+
         </section>
+
         <section>
           <section>Terminal<br>
             <aside class="notes">
@@ -775,6 +849,7 @@ else:
         <section>
           <section>
             <aside class="notes">
+              There is no spoon
               filesystem filling, nothing there. talk about fd and open files.
               Two for the price of one.
               In one scenario, we were writing to a file that was deleted.
@@ -936,13 +1011,13 @@ dup2()
           </section>
 
           <section>
-            <h1>Methods</h1>
+            <h1>Troubleshooting Steps</h1>
             <ul>
               <li><h2>Make a backup</h2></li>
               <li><h2>Read Logs</h2></li>
-              <li><h2>Read Documentation</h2></li>
-              <li><h2>One thing only</h2></li>
+              <li><h2>Just one thing.</h2></li>
             </ul>
+            <img class="fragment" src="./columbo.jpg">
           </section>
 
           <section>
@@ -960,6 +1035,12 @@ dup2()
           </section>
 
           <section>
+            <aside class="notes">
+              When you trace, with ltrace or strace, lookup the command being
+              shown. man page on it.
+              Check SEE ALSO
+              you can never read too much
+            </aside>
             <h1>Trace</h1>
             <ul>
               <li>ltrace</li>
@@ -967,6 +1048,60 @@ dup2()
               <li>SEE ALSO</li>
               <li class="fragment">...keep reading</li>
             </ul>
+          </section>
+
+          <section>
+            <aside class="notes">
+              troubleshooting usually comes down to the usual suspects.
+            </aside>
+            <img class="fragment" src="./usualsuspects.jpg">
+          </section>
+
+          <section>
+            <aside class="notes">
+              Is there a process using memory, open file handles
+              Does the user still exist, are there other users with the same uid
+              - users are numbers
+              permissions, it works when you run it, root has super powers
+              seriously, use runuser, make sure the user running the process can
+              do it.
+              space df -i, are there inodes free, what about limits, open
+              filehandle limits
+              nss - use the same library calls as nss would, make sure something
+              isn't in those other sources.
+              network - we'll attempt to cover that if there is time. it's a
+              whole topic onto itself.
+            </aside>
+            <ul>
+              <li class="fragment">Processes</li>
+              <li class="fragment">Users/Groups</li>
+              <li class="fragment">Permissions<br><code
+                  class="fragment">runuser</code></li>
+              <li class="fragment">Space</li>
+              <li class="fragment">NSS</li>
+              <li class="fragment">Network</li>
+            </ul>
+          </section>
+
+          <section>
+            <h1>Always check permissions</h1>
+            <h2><code>runuser</code></h2>
+          </section>
+
+          <section>
+            <h1>Please check permissions</h1>
+            <h2>Hokey religions and ancient weapons<br> are no match for<h2>
+            <h1 class="fragment">BASIC UNIX PERMISSIONS</h1>
+          </section>
+
+          <section>
+            <h1>runuser</h1>
+            <pre class="stretch"><code class="nohighlight">
+# cat /var/www/html/index.html
+Hello World!
+# runuser apache -s /bin/bash -c 'cat /var/www/html/index.html'
+cat: /var/www/html/index.html: Permission denied
+            </code></pre>
           </section>
         </section>
 
@@ -1040,9 +1175,36 @@ open@SYS("/lib64/libnss_files.so.2", 524288, 020165240000) = 4
 
           <section>
             <aside class="notes">
+              netcat is the swiss army knife of network troubleshooting.
+              You can open a port to listen, you can connect to a port
+              Read the man page on this.
+
             </aside>
             <h1>nc</h1>
             <img class="fragment" src="./swissarmyknife.jpg">
+          </section>
+
+          <section>
+            <aside class="notes">
+              an example on netcat between hosts.
+              Then an example on an http connection.
+              ap nc.cast
+            </aside>
+            <h1>&lArr; &lArr; &lArr;</h1>
+          </section>
+
+          <section>
+            <aside class="notes">
+              what if getent and nc can't help you solve the problem.
+              tcpdump to  write out network traffic to a file
+              wireshark to read that output and start piecing it together.
+              mtr /traceroute to see if there are problems in the network
+              between here and there.
+              this is a whole other talk on networking that we won't do now
+              we want to talk about encryption
+            </aside>
+            <h1>tcpdump / wireshark</h1>
+            <h1>mtr / traceroute</h1>
           </section>
 
         </section>
@@ -1054,8 +1216,15 @@ open@SYS("/lib64/libnss_files.so.2", 524288, 020165240000) = 4
           </section>
 
           <section>
+            <aside class="notes">
+                   modulus
+                   prime
+                   that stuff.
+            </aside>
           </section>
+
         </section>
+        <!-- end of encryption -->
 
         <section>
           <h1>Questions?</h1>

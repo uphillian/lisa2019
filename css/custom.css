@@ -10,7 +10,7 @@
 .reveal table td {
   color: black;
   border-bottom: 0px;
-  border: 1px solid black;
+  border: 1px solid white;
 }
 
 .reveal h1,
@@ -19,7 +19,7 @@
 .reveal h4,
 .reveal h5,
 .reveal h6 {
-  color: lightsteelblue;
+  color: navy;
   font-family: 'Big Shoulders Display', cursive;
   text-transform: none;
 }
